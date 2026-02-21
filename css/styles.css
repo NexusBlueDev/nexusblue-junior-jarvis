@@ -18,7 +18,7 @@ body {
   color: #fff;
   text-align: center;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 100vh; padding: 24px 16px;
+  min-height: 100vh; padding: 40px 20px;
   -webkit-user-select: none; user-select: none;
   position: relative;
 }
@@ -68,6 +68,10 @@ body {
   height: auto;
   opacity: 1;
   filter: drop-shadow(0 0 10px rgba(255,255,255,0.7)) drop-shadow(0 0 25px rgba(250,112,34,0.4));
+  background: rgba(0,0,0,0.5);
+  padding: 14px 24px;
+  border-radius: 16px;
+  border: 1px solid rgba(255,255,255,0.1);
 }
 .nb-logo-footer {
   width: 140px;
@@ -90,8 +94,9 @@ body {
 /* ========== Screens ========== */
 .screen {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 100%; max-width: 600px; gap: 14px;
+  width: 100%; max-width: 600px; gap: 16px;
   position: relative; z-index: 1;
+  padding: 12px 0;
 }
 
 /* ========== Interactive Orb (Brand Blue) ========== */
@@ -288,7 +293,7 @@ body {
 
 /* ========== Responsive — iPad & Desktop ========== */
 @media (min-width: 768px) {
-  body { padding: 32px 24px; }
+  body { padding: 44px 28px; }
   .screen { max-width: 700px; gap: 18px; }
   .title { font-size: 3.5em; }
   .tagline { font-size: 1.3em; }
