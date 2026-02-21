@@ -53,6 +53,8 @@ JJ.app = {
   startGame: function () {
     if (this.state === 'playing') return;
     this.state = 'playing';
+    // Grab mic permission on first interaction so Edge won't re-prompt each question
+    JJ.speech.requestMicPermission();
     JJ.engine.reset();
     JJ.metrics.recordGameStart();
     JJ.ui.updateMetrics(JJ.metrics.getPlayCount());

@@ -13,6 +13,8 @@ JJ.speech = {
   _micTimeout: null,
   _onListeningChange: null,
   _answerCallback: null,
+  _micStream: null,
+  _micGranted: false,
 
   init: function () {
     if ('speechSynthesis' in window) {
@@ -86,6 +88,28 @@ JJ.speech = {
   },
 
   /**
+   * Request mic permission once via getUserMedia. Holds the stream open
+   * so the browser won't re-prompt on every SpeechRecognition.start().
+   */
+  requestMicPermission: function (callback) {
+    if (this._micGranted) { if (callback) callback(); return; }
+    var self = this;
+    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+      navigator.mediaDevices.getUserMedia({ audio: true }).then(function (stream) {
+        self._micStream = stream;
+        self._micGranted = true;
+        console.log('JJ Mic: permission granted');
+        if (callback) callback();
+      }).catch(function () {
+        console.log('JJ Mic: permission denied');
+        if (callback) callback();
+      });
+    } else {
+      if (callback) callback();
+    }
+  },
+
+  /**
    * Always-on listening: starts mic, auto-restarts after silence/timeout.
    * Calls callback when a recognized answer is detected.
    * Keeps restarting until explicitly stopped via stopListening().
@@ -93,7 +117,11 @@ JJ.speech = {
   listen: function (callback) {
     if (!this.available.stt) return;
     this._answerCallback = callback;
-    this._startRecognition();
+    var self = this;
+    // Ensure mic permission is granted before starting recognition
+    this.requestMicPermission(function () {
+      self._startRecognition();
+    });
   },
 
   _startRecognition: function () {
