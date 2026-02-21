@@ -1,9 +1,10 @@
 /**
  * Junior Jarvis — Service Worker
- * Cache-first strategy for full offline support.
+ * Network-first strategy: always serves fresh content when online,
+ * falls back to cache when offline (expo booth scenario).
  */
 
-var CACHE_NAME = 'junior-jarvis-v7';
+var CACHE_NAME = 'junior-jarvis-v8';
 var ASSETS = [
   './',
   'index.html',
@@ -41,10 +42,17 @@ self.addEventListener('activate', function (event) {
   self.clients.claim();
 });
 
+/* Network-first: try fresh content, update cache, fall back to cached if offline */
 self.addEventListener('fetch', function (event) {
   event.respondWith(
-    caches.match(event.request).then(function (cached) {
-      return cached || fetch(event.request);
+    fetch(event.request).then(function (response) {
+      var clone = response.clone();
+      caches.open(CACHE_NAME).then(function (cache) {
+        cache.put(event.request, clone);
+      });
+      return response;
+    }).catch(function () {
+      return caches.match(event.request);
     })
   );
 });
