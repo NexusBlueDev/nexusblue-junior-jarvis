@@ -140,19 +140,5 @@ JJ.effects = {
       g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
       o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.4);
     } catch (e) {}
-  },
-
-  soundMicOn: function () {
-    try {
-      var ctx = this._ctx();
-      var o = ctx.createOscillator();
-      var g = ctx.createGain();
-      o.connect(g); g.connect(ctx.destination);
-      o.frequency.value = 660;
-      o.type = 'sine';
-      g.gain.setValueAtTime(0.1, ctx.currentTime);
-      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
-      o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.12);
-    } catch (e) {}
   }
 };

@@ -5,92 +5,106 @@
  * AI-First Design: This static dataset serves as the offline fallback.
  * When an AI provider is configured, the engine can dynamically generate
  * questions and evaluate answers using natural language understanding.
+ *
+ * v4 — Forward-thinking AI roles: strategy, manufacturing, creation, exploration.
+ * Each character has a unique property combination (min 2 diffs between any pair).
+ *
+ * Property matrix:
+ *   strategy create robots nature art people physical explore
+ * 1    T       F      F      F     F     T      F       F     AI Strategist
+ * 2    F       T      T      F     F     F      T       F     Smart Factory Creator
+ * 3    F       T      F      F     T     F      F       F     AI Artist
+ * 4    T       F      T      T     F     F      F       T     Space Pioneer
+ * 5    F       T      T      F     F     T      F       F     Bio-Tech Healer
+ * 6    T       F      F      T     F     T      F       T     Planet Guardian
+ * 7    F       T      T      F     T     F      F       T     Virtual World Builder
+ * 8    T       T      T      F     F     F      T       T     Quantum Inventor
  */
 var JJ = window.JJ || {};
 
 JJ.characters = [
   {
-    id: 'robot-builder',
-    name: 'Robot Builder',
-    emoji: '🤖',
-    fact: 'Robot Builders design and build helpful machines! They teach robots to do amazing things like assembling cars, exploring space, and even helping around the house.',
-    gradient: ['#78909C', '#455A64'],
-    props: { auto: true, create: true, tech: true, nature: false, art: false, explore: false, health: false, food: false }
+    id: 'ai-strategist',
+    name: 'AI Strategist',
+    emoji: '🧠',
+    fact: 'AI Strategists are the masterminds who figure out how AI can change the world! They make big plans, solve impossible puzzles, and help everyone use AI wisely.',
+    gradient: ['#7C4DFF', '#311B92'],
+    props: { strategy: true, create: false, robots: false, nature: false, art: false, people: true, physical: false, explore: false }
   },
   {
-    id: 'smart-farmer',
-    name: 'Smart Farmer',
-    emoji: '🌾',
-    fact: 'Smart Farmers use drones and sensors to grow food more efficiently! AI helps them know exactly when to water plants and keep crops healthy.',
-    gradient: ['#66BB6A', '#2E7D32'],
-    props: { auto: true, create: false, tech: false, nature: true, art: false, explore: false, health: false, food: true }
-  },
-  {
-    id: 'virtual-explorer',
-    name: 'Virtual Explorer',
-    emoji: '🚀',
-    fact: 'Virtual Explorers travel to incredible digital worlds using VR headsets! AI creates amazing places to discover — from the bottom of the ocean to the surface of Mars.',
-    gradient: ['#AB47BC', '#4A148C'],
-    props: { auto: false, create: true, tech: true, nature: false, art: false, explore: true, health: false, food: false }
+    id: 'smart-factory-creator',
+    name: 'Smart Factory Creator',
+    emoji: '🏭',
+    fact: 'Smart Factory Creators build the factories of the future! Imagine a place where robots, 3D printers, and AI work together to build anything — from flying cars to space stations.',
+    gradient: ['#546E7A', '#263238'],
+    props: { strategy: false, create: true, robots: true, nature: false, art: false, people: false, physical: true, explore: false }
   },
   {
     id: 'ai-artist',
     name: 'AI Artist',
     emoji: '🎨',
-    fact: 'AI Artists use computers to create incredible artwork! They combine their imagination with AI tools to make paintings, animations, and designs nobody has ever seen before.',
+    fact: 'AI Artists create mind-blowing art, music, and movies that nobody has ever seen! They team up with AI to imagine and create things beyond anyone\'s wildest dreams.',
     gradient: ['#EF5350', '#F9A825'],
-    props: { auto: true, create: true, tech: false, nature: false, art: true, explore: false, health: false, food: false }
+    props: { strategy: false, create: true, robots: false, nature: false, art: true, people: false, physical: false, explore: false }
   },
   {
-    id: 'health-helper',
-    name: 'Health Helper',
-    emoji: '🩺',
-    fact: 'Health Helpers use AI to keep people healthy! Smart computers can spot problems early, help doctors find cures, and make sure everyone gets the best care possible.',
+    id: 'space-pioneer',
+    name: 'Space Pioneer',
+    emoji: '🚀',
+    fact: 'Space Pioneers use AI robots to explore the universe! They send smart rovers to Mars, plan missions to distant stars, and dream up humanity\'s future among the galaxies.',
+    gradient: ['#AB47BC', '#4A148C'],
+    props: { strategy: true, create: false, robots: true, nature: true, art: false, people: false, physical: false, explore: true }
+  },
+  {
+    id: 'biotech-healer',
+    name: 'Bio-Tech Healer',
+    emoji: '🧬',
+    fact: 'Bio-Tech Healers use tiny AI-powered nano-robots to cure diseases! Imagine robots smaller than a cell fixing your body from the inside — that\'s the future of medicine!',
     gradient: ['#42A5F5', '#1565C0'],
-    props: { auto: true, create: false, tech: false, nature: false, art: false, explore: false, health: true, food: false }
+    props: { strategy: false, create: true, robots: true, nature: false, art: false, people: true, physical: false, explore: false }
   },
   {
-    id: 'eco-guardian',
-    name: 'Eco Guardian',
+    id: 'planet-guardian',
+    name: 'Planet Guardian',
     emoji: '🌍',
-    fact: 'Eco Guardians protect our planet with AI! They use smart drones and sensors to watch over forests, track endangered animals, and keep our oceans clean.',
+    fact: 'Planet Guardians protect Earth using AI! They track endangered animals with smart drones, clean up oceans with robot ships, and plan clever strategies to fight climate change.',
     gradient: ['#26A69A', '#00695C'],
-    props: { auto: true, create: false, tech: false, nature: true, art: false, explore: true, health: false, food: false }
+    props: { strategy: true, create: false, robots: false, nature: true, art: false, people: true, physical: false, explore: true }
   },
   {
-    id: 'game-designer',
-    name: 'Game Designer',
-    emoji: '🎮',
-    fact: 'Game Designers create the video games you love to play! With AI, they can build worlds that change and react to every player differently. How cool is that?',
-    gradient: ['#EC407A', '#7B1FA2'],
-    props: { auto: false, create: true, tech: true, nature: false, art: true, explore: false, health: false, food: false }
+    id: 'virtual-world-builder',
+    name: 'Virtual World Builder',
+    emoji: '🌌',
+    fact: 'Virtual World Builders create entire digital universes you can step into! Using VR headsets and AI, they design worlds so real you can\'t tell the difference — and you explore them with friends.',
+    gradient: ['#5C6BC0', '#1A237E'],
+    props: { strategy: false, create: true, robots: true, nature: false, art: true, people: false, physical: false, explore: true }
   },
   {
-    id: 'food-inventor',
-    name: 'Food Inventor',
-    emoji: '🍎',
-    fact: 'Food Inventors use AI to create yummy new recipes and healthy meals! Smart kitchens with robot helpers can cook food that is both delicious and good for you.',
+    id: 'quantum-inventor',
+    name: 'Quantum Inventor',
+    emoji: '⚡',
+    fact: 'Quantum Inventors build tomorrow\'s technology today! Quantum computers, teleportation devices, and gadgets straight out of science fiction — they turn the impossible into reality.',
     gradient: ['#FFA726', '#E65100'],
-    props: { auto: true, create: true, tech: false, nature: false, art: false, explore: false, health: true, food: true }
+    props: { strategy: true, create: true, robots: true, nature: false, art: false, people: false, physical: true, explore: true }
   }
 ];
 
 JJ.questions = [
-  { id: 'auto',    text: 'Does your superpower make things work automatically?', hint: 'Like machines doing jobs on their own!', prop: 'auto' },
-  { id: 'create',  text: 'Does it involve building or creating new things?',      hint: 'Inventing or making something brand new!', prop: 'create' },
-  { id: 'tech',    text: 'Does it use computers, robots, or cool gadgets?',       hint: 'Technology and high-tech tools!', prop: 'tech' },
-  { id: 'nature',  text: 'Is it connected to nature or the outdoors?',            hint: 'Plants, animals, forests, or the sky!', prop: 'nature' },
-  { id: 'art',     text: 'Does it involve art, music, or being creative?',        hint: 'Drawing, designing, or making things look awesome!', prop: 'art' },
-  { id: 'explore', text: 'Is it about going on adventures and exploring?',        hint: 'Discovering new places and exciting things!', prop: 'explore' },
-  { id: 'health',  text: 'Does it help people stay healthy and feel good?',       hint: 'Helping doctors or keeping people strong!', prop: 'health' },
-  { id: 'food',    text: 'Is it about food — growing it, cooking it, or inventing new meals?', hint: 'Yummy food and smart kitchens!', prop: 'food' }
+  { id: 'strategy', text: 'Does your AI superpower involve making big plans and strategies?',    hint: 'Like planning how to change the world!',            prop: 'strategy' },
+  { id: 'create',   text: 'Does it involve building or creating brand new things?',              hint: 'Making or inventing something totally new!',         prop: 'create' },
+  { id: 'robots',   text: 'Does it involve working with robots?',                                hint: 'Robots helping do cool and amazing tasks!',          prop: 'robots' },
+  { id: 'nature',   text: 'Is it connected to nature, the planet, or outer space?',              hint: 'The Earth, animals, oceans, or the stars!',          prop: 'nature' },
+  { id: 'art',      text: 'Does it involve art, design, or being super creative?',               hint: 'Drawing, designing, or making beautiful things!',    prop: 'art' },
+  { id: 'people',   text: 'Does it directly help or take care of people?',                       hint: 'Making sure people are healthy, happy, or safe!',    prop: 'people' },
+  { id: 'physical', text: 'Does it make real physical things you can touch?',                     hint: 'Things you can actually hold in your hands!',        prop: 'physical' },
+  { id: 'explore',  text: 'Is it about exploring or discovering new places?',                     hint: 'Going on adventures and discovering the unknown!',   prop: 'explore' }
 ];
 
 JJ.messages = {
   welcome:       'Hey there, future superstar! I\'m Junior Jarvis, your friendly AI buddy! ' +
-                 'Here\'s how we play: think of a cool AI superpower or a future job that uses artificial intelligence. ' +
+                 'Pick one of these amazing AI superpowers in your head. ' +
                  'I\'ll ask you some yes or no questions, and try to guess what you\'re thinking! ' +
-                 'You can say your answer out loud, or just tap the buttons. Ready? Let\'s go!',
+                 'Just tap the buttons to answer. Ready? Let\'s go!',
   start:         'Awesome! Let me put on my thinking cap. Here comes my first question!',
   guessPrefix:   'I think I know! Is it... ',
   correct:       'I knew it! High five — you\'re a natural AI thinker!',
