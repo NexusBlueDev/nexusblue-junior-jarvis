@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Junior Jarvis — AI Future Guesser</title>
+
+  <!-- PWA -->
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#001F3F">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="Voice-driven AI guessing game — think of a future AI job and Junior Jarvis will guess it!">
+
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+  <!-- ========== Welcome Screen ========== -->
+  <div id="screen-welcome" class="screen">
+    <h1 class="title">Junior Jarvis</h1>
+    <div class="orb-container">
+      <div class="orb"></div>
+    </div>
+    <p class="subtitle">Think of an AI superpower or future job — and I shall deduce your choice!</p>
+    <button id="btn-start" class="btn btn-start">Start</button>
+  </div>
+
+  <!-- ========== Question Screen ========== -->
+  <div id="screen-game" class="screen hidden">
+    <div class="orb-container">
+      <div class="orb orb-small"></div>
+    </div>
+    <div class="progress">
+      <div id="progress-bar" class="progress-bar"></div>
+    </div>
+    <p id="question-text" class="question"></p>
+    <p id="question-hint" class="question-hint"></p>
+    <div class="answer-buttons">
+      <button id="btn-yes" class="btn btn-yes">Yes</button>
+      <button id="btn-no" class="btn btn-no">No</button>
+      <button id="btn-probably" class="btn btn-probably">Probably</button>
+      <button id="btn-probably-not" class="btn btn-probnot">Probably Not</button>
+      <button id="btn-uncertain" class="btn btn-uncertain">Not Sure</button>
+    </div>
+  </div>
+
+  <!-- ========== Guess Screen ========== -->
+  <div id="screen-guess" class="screen hidden">
+    <div id="guess-card" class="character-card">
+      <div id="guess-emoji" class="character-emoji"></div>
+      <h2 id="guess-name" class="character-name"></h2>
+      <p id="guess-fact" class="character-fact"></p>
+    </div>
+    <div class="guess-buttons">
+      <button id="btn-correct" class="btn btn-yes">Correct!</button>
+      <button id="btn-incorrect" class="btn btn-no">Not Quite</button>
+    </div>
+  </div>
+
+  <!-- ========== Result Screen ========== -->
+  <div id="screen-result" class="screen hidden">
+    <div id="result-icon" class="result-icon"></div>
+    <h2 id="result-message" class="result-message"></h2>
+    <p id="result-detail" class="result-detail"></p>
+    <button id="btn-restart" class="btn btn-start">New Query!</button>
+  </div>
+
+  <!-- ========== Metrics ========== -->
+  <div class="metrics">Games: <span id="play-count">0</span></div>
+
+  <!-- ========== Scripts (order matters) ========== -->
+  <script src="js/data.js"></script>
+  <script src="js/engine.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/metrics.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

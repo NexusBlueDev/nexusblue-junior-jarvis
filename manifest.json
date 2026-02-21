@@ -1,0 +1,25 @@
+{
+  "name": "Junior Jarvis — AI Future Guesser",
+  "short_name": "Junior Jarvis",
+  "description": "Voice-driven AI guessing game for kids. Think of a future AI job and Jarvis will guess it!",
+  "start_url": "index.html",
+  "display": "fullscreen",
+  "orientation": "portrait",
+  "background_color": "#001F3F",
+  "theme_color": "#001F3F",
+  "categories": ["games", "education"],
+  "icons": [
+    {
+      "src": "assets/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "assets/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
