@@ -69,7 +69,7 @@ body {
   opacity: 1;
   filter: drop-shadow(0 0 10px rgba(255,255,255,0.7)) drop-shadow(0 0 25px rgba(250,112,34,0.4));
   background: rgba(255,255,255,0.12);
-  padding: 18px 32px;
+  padding: 12px 24px;
   border-radius: 18px;
   border: 2px solid rgba(250,112,34,0.6);
   margin-top: 4px;
@@ -102,15 +102,18 @@ body {
 
 /* Welcome screen: spread content so logo drops down, button anchors near bottom */
 #screen-welcome {
-  justify-content: space-between;
-  min-height: calc(100vh - 40px);
+  justify-content: flex-start;
+  height: calc(100vh - 40px);
+  max-height: calc(100vh - 40px);
+  overflow: hidden;
   gap: 6px;
 }
 #screen-welcome .orb-wrapper { display: none; }
+#screen-welcome .character-gallery { flex-shrink: 1; overflow: hidden; }
 #screen-welcome .btn-start {
   margin-top: auto;
-  margin-bottom: 8px;
-  align-self: stretch;
+  flex-shrink: 0;
+  align-self: center;
   max-width: 400px;
   width: 80%;
   text-align: center;
@@ -193,13 +196,13 @@ body {
 .gallery-name { font-size: 0.7em; color: rgba(255,255,255,0.9); white-space: nowrap; font-weight: 600; }
 
 /* ========== How to Play ========== */
-.how-to-play { padding: 8px 16px; max-width: 420px; width: 100%; }
-.how-to-play-title { font-size: 1em; color: #46b3e6; margin-bottom: 6px; letter-spacing: 1px; font-weight: 700; }
+.how-to-play { padding: 6px 14px; max-width: 420px; width: 100%; }
+.how-to-play-title { font-size: 0.9em; color: #46b3e6; margin-bottom: 4px; letter-spacing: 1px; font-weight: 700; }
 
-.steps { display: flex; flex-direction: column; gap: 5px; text-align: left; }
-.step { display: flex; align-items: center; gap: 10px; }
-.step-icon { font-size: 1.4em; min-width: 28px; text-align: center; }
-.step-text { font-size: 0.95em; color: rgba(255,255,255,0.85); }
+.steps { display: flex; flex-direction: column; gap: 3px; text-align: left; }
+.step { display: flex; align-items: center; gap: 8px; }
+.step-icon { font-size: 1.2em; min-width: 24px; text-align: center; }
+.step-text { font-size: 0.85em; color: rgba(255,255,255,0.85); }
 
 /* ========== Game Header ========== */
 .game-header { display: flex; align-items: center; gap: 14px; width: 100%; justify-content: center; }
