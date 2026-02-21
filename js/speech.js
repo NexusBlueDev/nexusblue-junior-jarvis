@@ -1,8 +1,7 @@
 /**
  * Junior Jarvis — Speech Module
  * Web Speech API wrapper with graceful fallbacks.
- * TTS uses British English voice when available.
- * STT is explicitly acquired/released to avoid holding the mic.
+ * Friendly British voice. Mic auto-releases after 6 seconds max.
  */
 var JJ = window.JJ || {};
 
@@ -12,10 +11,11 @@ JJ.speech = {
   recognition: null,
   available: { tts: false, stt: false },
   _listening: false,
-  _onListeningChange: null, // callback(bool) — UI uses this for mic indicator
+  _listenTimer: null,
+  _micTimeout: null,
+  _onListeningChange: null,
 
   init: function () {
-    // Text-to-Speech
     if ('speechSynthesis' in window) {
       this.synth = window.speechSynthesis;
       this.available.tts = true;
@@ -23,13 +23,8 @@ JJ.speech = {
       var self = this;
       var loadVoices = function () {
         var voices = self.synth.getVoices();
-        // Priority chain for a deep, authoritative Jarvis voice:
-        // 1. Google UK English Male (Chrome) — closest to Jarvis
-        // 2. Microsoft George (Edge/Windows) — deep British male
-        // 3. Daniel (macOS/Safari) — British male
-        // 4. Any en-GB male voice
-        // 5. Any en-GB voice
-        // 6. Any English voice
+        // Friendly British male voice priority:
+        // Google UK Male (Chrome), Microsoft George (Edge), Daniel (macOS)
         self.voice =
           voices.find(function (v) { return v.name === 'Google UK English Male'; }) ||
           voices.find(function (v) { return v.name.indexOf('George') !== -1 && v.lang === 'en-GB'; }) ||
@@ -46,19 +41,13 @@ JJ.speech = {
       }
     }
 
-    // Speech-to-Text
     var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (SpeechRecognition) {
       this.available.stt = true;
     }
   },
 
-  /**
-   * Speak text via TTS. Calls onEnd when finished.
-   * Mic is always released before speaking starts.
-   */
   speak: function (text, onEnd) {
-    // Always release mic before speaking to prevent holding
     this.stopListening();
 
     if (!this.available.tts || !this.synth) {
@@ -70,8 +59,8 @@ JJ.speech = {
 
     var utterance = new SpeechSynthesisUtterance(text);
     if (this.voice) utterance.voice = this.voice;
-    utterance.rate = 0.95;   // Measured, deliberate pace — like Jarvis
-    utterance.pitch = 0.85;  // Slightly deeper for authoritative male tone
+    utterance.rate = 1.0;    // Natural conversational pace
+    utterance.pitch = 0.95;  // Warm male tone, not too deep
 
     if (onEnd) {
       utterance.onend = onEnd;
@@ -96,20 +85,23 @@ JJ.speech = {
   },
 
   /**
-   * Start listening for voice input. Acquires mic, calls callback(value) once,
-   * then automatically releases mic. Only one session at a time.
+   * Listen for voice input with a hard 6-second timeout.
+   * Mic is acquired, held for up to 6s, then always released.
+   * Touch buttons work in parallel as the primary input method.
    */
   listen: function (callback) {
     if (!this.available.stt) return;
 
-    // Release any existing session first
     this.stopListening();
 
     var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     var self = this;
+    var answered = false;
 
-    // Small delay to ensure previous session is fully released
-    setTimeout(function () {
+    // 150ms gap ensures previous mic session is fully closed
+    this._listenTimer = setTimeout(function () {
+      self._listenTimer = null;
+
       var rec = new SpeechRecognition();
       rec.continuous = false;
       rec.interimResults = false;
@@ -122,14 +114,17 @@ JJ.speech = {
       };
 
       rec.onresult = function (e) {
+        if (answered) return;
+        answered = true;
+
         var transcript = e.results[0][0].transcript.toLowerCase().trim();
         var value;
 
         if (/\b(probably not|maybe not|not really|i don'?t think so)\b/.test(transcript)) {
           value = 0.25;
-        } else if (/\b(yes|yeah|yep|yup|affirmative|sure|correct|absolutely|definitely)\b/.test(transcript)) {
+        } else if (/\b(yes|yeah|yep|yup|affirmative|sure|correct|absolutely|definitely|uh huh)\b/.test(transcript)) {
           value = 1;
-        } else if (/\b(no|nope|nah|negative|incorrect|never)\b/.test(transcript)) {
+        } else if (/\b(no|nope|nah|negative|incorrect|never|uh uh)\b/.test(transcript)) {
           value = 0;
         } else if (/\b(probably|maybe|possibly|i think so|sort of|kind of)\b/.test(transcript)) {
           value = 0.75;
@@ -137,16 +132,13 @@ JJ.speech = {
           value = null;
         }
 
-        // Release mic immediately after getting a result
         self.stopListening();
-
         if (value !== undefined) {
           callback(value);
         }
       };
 
       rec.onend = function () {
-        // Mic released (either by us or naturally after silence)
         self._listening = false;
         self.recognition = null;
         if (self._onListeningChange) self._onListeningChange(false);
@@ -165,14 +157,29 @@ JJ.speech = {
       } catch (e) {
         self._listening = false;
         self.recognition = null;
+        return;
       }
-    }, 100);
+
+      // Hard timeout: always release mic after 6 seconds
+      self._micTimeout = setTimeout(function () {
+        self._micTimeout = null;
+        if (!answered) {
+          self.stopListening();
+        }
+      }, 6000);
+
+    }, 150);
   },
 
-  /**
-   * Explicitly release the microphone.
-   */
   stopListening: function () {
+    if (this._listenTimer) {
+      clearTimeout(this._listenTimer);
+      this._listenTimer = null;
+    }
+    if (this._micTimeout) {
+      clearTimeout(this._micTimeout);
+      this._micTimeout = null;
+    }
     if (this.recognition) {
       try { this.recognition.abort(); } catch (e) { /* ignore */ }
       this.recognition = null;
@@ -189,11 +196,7 @@ JJ.speech = {
 
   cancelSpeech: function () {
     this.stopListening();
-    if (this.synth) {
-      this.synth.cancel();
-    }
-    if (this._keepAliveTimer) {
-      clearInterval(this._keepAliveTimer);
-    }
+    if (this.synth) this.synth.cancel();
+    if (this._keepAliveTimer) clearInterval(this._keepAliveTimer);
   }
 };

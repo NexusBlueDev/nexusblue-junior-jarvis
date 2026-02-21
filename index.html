@@ -27,8 +27,25 @@
       <div class="orb-pulse-ring"></div>
       <div class="orb-pulse-ring orb-pulse-ring-2"></div>
     </div>
-    <p class="subtitle">Think of an AI superpower or future job — and I shall deduce your choice!</p>
-    <button id="btn-start" class="btn btn-start">Start</button>
+    <div class="how-to-play">
+      <h2 class="how-to-play-title">How to Play</h2>
+      <div class="steps">
+        <div class="step">
+          <span class="step-number">1</span>
+          <span class="step-text">Think of a cool AI job or superpower</span>
+        </div>
+        <div class="step">
+          <span class="step-number">2</span>
+          <span class="step-text">Answer my yes-or-no questions</span>
+        </div>
+        <div class="step">
+          <span class="step-number">3</span>
+          <span class="step-text">See if I can guess what you picked!</span>
+        </div>
+      </div>
+      <p class="how-to-play-hint">You can say your answers out loud or tap the buttons!</p>
+    </div>
+    <button id="btn-start" class="btn btn-start">Let's Play!</button>
   </div>
 
   <!-- ========== Question Screen ========== -->
@@ -41,31 +58,34 @@
       <div class="orb-pulse-ring"></div>
       <div class="orb-pulse-ring orb-pulse-ring-2"></div>
     </div>
-    <div id="mic-badge" class="mic-badge">🎤 Listening...</div>
+    <div id="mic-badge" class="mic-badge">🎤 I'm listening...</div>
     <div class="progress">
       <div id="progress-bar" class="progress-bar"></div>
     </div>
     <p id="question-text" class="question"></p>
     <p id="question-hint" class="question-hint"></p>
+    <p class="input-hint">Say your answer or tap a button!</p>
     <div class="answer-buttons">
-      <button id="btn-yes" class="btn btn-yes">Yes</button>
-      <button id="btn-no" class="btn btn-no">No</button>
-      <button id="btn-probably" class="btn btn-probably">Probably</button>
-      <button id="btn-probably-not" class="btn btn-probnot">Probably Not</button>
+      <button id="btn-yes" class="btn btn-yes">Yes!</button>
+      <button id="btn-no" class="btn btn-no">No!</button>
+      <button id="btn-probably" class="btn btn-probably">Maybe</button>
+      <button id="btn-probably-not" class="btn btn-probnot">Not Really</button>
       <button id="btn-uncertain" class="btn btn-uncertain">Not Sure</button>
     </div>
   </div>
 
   <!-- ========== Guess Screen ========== -->
   <div id="screen-guess" class="screen hidden">
+    <p class="guess-intro">I think I know what you picked...</p>
     <div id="guess-card" class="character-card">
       <div id="guess-emoji" class="character-emoji"></div>
       <h2 id="guess-name" class="character-name"></h2>
       <p id="guess-fact" class="character-fact"></p>
     </div>
+    <p class="guess-ask">Did I get it right?</p>
     <div class="guess-buttons">
-      <button id="btn-correct" class="btn btn-yes">Correct!</button>
-      <button id="btn-incorrect" class="btn btn-no">Not Quite</button>
+      <button id="btn-correct" class="btn btn-yes">Yes! 🎉</button>
+      <button id="btn-incorrect" class="btn btn-no">Nope!</button>
     </div>
   </div>
 
@@ -74,7 +94,7 @@
     <div id="result-icon" class="result-icon"></div>
     <h2 id="result-message" class="result-message"></h2>
     <p id="result-detail" class="result-detail"></p>
-    <button id="btn-restart" class="btn btn-start">New Query!</button>
+    <button id="btn-restart" class="btn btn-start">Play Again!</button>
   </div>
 
   <!-- ========== Metrics ========== -->
