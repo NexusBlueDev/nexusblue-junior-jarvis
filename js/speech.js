@@ -57,7 +57,12 @@ JJ.speech = {
     if (this.voice) u.voice = this.voice;
     u.rate = 1.0;
     u.pitch = 1.0;
-    if (onEnd) { u.onend = onEnd; u.onerror = onEnd; }
+    if (onEnd) {
+      var fired = false;
+      var guard = function () { if (fired) return; fired = true; onEnd(); };
+      u.onend = guard;
+      u.onerror = guard;
+    }
     this.synth.speak(u);
     this._keepAlive();
   },

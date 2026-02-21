@@ -237,48 +237,50 @@ body {
 @keyframes confettiBurst { 0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; } 100% { transform: translate(var(--confetti-x,100px), var(--confetti-y,-200px)) rotate(var(--confetti-r,360deg)) scale(0.3); opacity: 0; } }
 
 /* ========== Atmospheric Background Scene ========== */
+/* To use a custom image: place it in assets/ and uncomment the body background-image line below */
+/* body { background-image: url('../assets/classroom-bg.jpg'); background-size: cover; background-position: center; } */
+
 .bg-scene {
   position: fixed; inset: 0;
   pointer-events: none; z-index: 0;
   overflow: hidden;
 }
 
-/* Subtle perspective grid floor */
+/* Perspective grid floor — sci-fi classroom feel */
 .bg-grid {
-  position: absolute; bottom: 0; left: -20%; right: -20%;
-  height: 50%;
+  position: absolute; bottom: 0; left: -30%; right: -30%;
+  height: 55%;
   background:
-    linear-gradient(180deg, transparent 0%, rgba(0,40,80,0.25) 100%),
-    repeating-linear-gradient(90deg, rgba(0,255,255,0.03) 0px, transparent 1px, transparent 80px),
-    repeating-linear-gradient(0deg, rgba(0,255,255,0.03) 0px, transparent 1px, transparent 80px);
-  transform: perspective(500px) rotateX(45deg);
+    linear-gradient(180deg, transparent 0%, rgba(0,40,80,0.35) 100%),
+    repeating-linear-gradient(90deg, rgba(0,255,255,0.06) 0px, transparent 1px, transparent 60px),
+    repeating-linear-gradient(0deg, rgba(0,255,255,0.06) 0px, transparent 1px, transparent 60px);
+  transform: perspective(400px) rotateX(50deg);
   transform-origin: bottom center;
 }
 
-/* Ambient glow orbs */
+/* Ambient glow orbs — visible colored atmosphere */
 .bg-glow {
   position: absolute;
   border-radius: 50%;
-  filter: blur(80px);
-  opacity: 0.15;
+  filter: blur(60px);
   animation: bgGlowDrift 12s ease-in-out infinite alternate;
 }
 .bg-glow-1 {
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, #0088FF, transparent 70%);
-  top: 10%; left: -5%;
+  width: 500px; height: 500px;
+  background: radial-gradient(circle, rgba(0,136,255,0.3), transparent 70%);
+  top: 5%; left: -8%;
   animation-delay: 0s;
 }
 .bg-glow-2 {
-  width: 350px; height: 350px;
-  background: radial-gradient(circle, #7B68EE, transparent 70%);
-  top: 20%; right: -5%;
+  width: 450px; height: 450px;
+  background: radial-gradient(circle, rgba(123,104,238,0.25), transparent 70%);
+  top: 15%; right: -8%;
   animation-delay: -4s;
 }
 .bg-glow-3 {
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, #00FFFF, transparent 70%);
-  bottom: 15%; left: 30%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(0,255,255,0.2), transparent 70%);
+  bottom: 10%; left: 25%;
   animation-delay: -8s;
 }
 @keyframes bgGlowDrift {
@@ -286,12 +288,12 @@ body {
   100% { transform: translate(30px, -20px) scale(1.15); }
 }
 
-/* Horizon line with faint glow */
+/* Horizon line with visible glow */
 .bg-horizon {
-  position: absolute; bottom: 25%; left: 0; right: 0;
-  height: 1px;
-  background: linear-gradient(90deg, transparent 5%, rgba(0,255,255,0.08) 30%, rgba(0,255,255,0.12) 50%, rgba(0,255,255,0.08) 70%, transparent 95%);
-  box-shadow: 0 0 30px 10px rgba(0,255,255,0.03);
+  position: absolute; bottom: 28%; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 5%, rgba(0,255,255,0.15) 25%, rgba(0,255,255,0.25) 50%, rgba(0,255,255,0.15) 75%, transparent 95%);
+  box-shadow: 0 0 40px 15px rgba(0,255,255,0.06), 0 0 80px 30px rgba(0,136,255,0.04);
 }
 
 /* ========== Metrics ========== */
