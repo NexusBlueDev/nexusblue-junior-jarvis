@@ -104,8 +104,9 @@ body {
 #screen-welcome {
   justify-content: space-between;
   min-height: calc(100vh - 40px);
-  gap: 8px;
+  gap: 6px;
 }
+#screen-welcome .orb-wrapper { display: none; }
 #screen-welcome .btn-start {
   margin-top: auto;
   margin-bottom: 8px;
@@ -173,26 +174,26 @@ body {
 .character-gallery {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  padding: 8px 4px;
+  gap: 8px;
+  padding: 4px 4px;
   max-width: 500px;
   width: 100%;
 }
 
 .gallery-item {
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
-  padding: 10px 6px; border-radius: 16px;
+  padding: 8px 6px; border-radius: 16px;
   border: 1px solid rgba(255,255,255,0.12);
   transition: transform 0.2s, box-shadow 0.2s;
   cursor: pointer;
 }
 .gallery-item:active { transform: scale(0.93); }
 .gallery-item:hover { box-shadow: 0 0 16px rgba(70,179,230,0.2); }
-.gallery-emoji { font-size: 2.4em; }
-.gallery-name { font-size: 0.75em; color: rgba(255,255,255,0.9); white-space: nowrap; font-weight: 600; }
+.gallery-emoji { font-size: 2em; }
+.gallery-name { font-size: 0.7em; color: rgba(255,255,255,0.9); white-space: nowrap; font-weight: 600; }
 
 /* ========== How to Play ========== */
-.how-to-play { padding: 10px 18px; max-width: 420px; width: 100%; }
+.how-to-play { padding: 8px 16px; max-width: 420px; width: 100%; }
 .how-to-play-title { font-size: 1em; color: #46b3e6; margin-bottom: 6px; letter-spacing: 1px; font-weight: 700; }
 
 .steps { display: flex; flex-direction: column; gap: 5px; text-align: left; }
