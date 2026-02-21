@@ -18,13 +18,24 @@ JJ.app = {
 
     this.bindEvents();
 
+    // Try auto-playing welcome speech; if browser blocks it,
+    // it will play when user taps "Let's Play" instead.
     var self = this;
     setTimeout(function () {
-      JJ.ui.setOrbState('speaking');
-      JJ.speech.speak(JJ.messages.welcome, function () {
-        JJ.ui.setOrbState('idle');
-      });
+      self._playWelcome();
     }, 600);
+  },
+
+  _welcomePlayed: false,
+
+  _playWelcome: function () {
+    if (this._welcomePlayed) return;
+    this._welcomePlayed = true;
+    var self = this;
+    JJ.ui.setOrbState('speaking');
+    JJ.speech.speak(JJ.messages.welcome, function () {
+      JJ.ui.setOrbState('idle');
+    });
   },
 
   bindEvents: function () {
@@ -45,6 +56,13 @@ JJ.app = {
     if (this.state === 'playing') return;
     this.state = 'playing';
     this._answerLock = false;
+
+    // First user tap — unlock speech synthesis for browsers that require gesture
+    if (!this._welcomePlayed) {
+      this._welcomePlayed = true;
+      JJ.speech.speak('');  // unlock with empty utterance
+    }
+
     JJ.engine.reset();
     JJ.metrics.recordGameStart();
     JJ.ui.updateMetrics(JJ.metrics.getPlayCount());
