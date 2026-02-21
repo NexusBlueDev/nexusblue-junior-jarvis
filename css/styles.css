@@ -68,10 +68,11 @@ body {
   height: auto;
   opacity: 1;
   filter: drop-shadow(0 0 10px rgba(255,255,255,0.7)) drop-shadow(0 0 25px rgba(250,112,34,0.4));
-  background: rgba(0,0,0,0.5);
-  padding: 14px 24px;
-  border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255,255,255,0.12);
+  padding: 16px 28px;
+  border-radius: 18px;
+  border: 2px solid rgba(250,112,34,0.6);
+  margin-top: 12px;
 }
 .nb-logo-footer {
   width: 140px;
@@ -97,6 +98,16 @@ body {
   width: 100%; max-width: 600px; gap: 16px;
   position: relative; z-index: 1;
   padding: 12px 0;
+}
+
+/* Welcome screen: spread content so logo drops down, button anchors near bottom */
+#screen-welcome {
+  justify-content: space-between;
+  min-height: calc(100vh - 80px);
+  gap: 12px;
+}
+#screen-welcome .btn-start {
+  margin-bottom: 12px;
 }
 
 /* ========== Interactive Orb (Brand Blue) ========== */
