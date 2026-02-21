@@ -4,7 +4,7 @@
  * falls back to cache when offline (expo booth scenario).
  */
 
-var CACHE_NAME = 'junior-jarvis-v10';
+var CACHE_NAME = 'junior-jarvis-v11';
 var ASSETS = [
   './',
   'index.html',

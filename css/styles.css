@@ -71,10 +71,10 @@ body {
   height: auto;
   opacity: 1;
   filter: drop-shadow(0 0 10px rgba(255,255,255,0.7)) drop-shadow(0 0 25px rgba(250,112,34,0.4));
-  background: rgba(255,255,255,0.12);
+  background: #fa7022;
   padding: 12px 24px;
   border-radius: 18px;
-  border: 2px solid rgba(250,112,34,0.6);
+  border: 2px solid #fa7022;
   margin-top: 4px;
 }
 .nb-logo-footer {
@@ -83,10 +83,10 @@ body {
   opacity: 1;
   margin-top: 8px;
   filter: drop-shadow(0 0 10px rgba(255,255,255,0.7)) drop-shadow(0 0 25px rgba(250,112,34,0.4));
-  background: rgba(255,255,255,0.12);
+  background: #fa7022;
   padding: 10px 20px;
   border-radius: 14px;
-  border: 2px solid rgba(250,112,34,0.6);
+  border: 2px solid #fa7022;
 }
 
 /* ========== Floating Particles ========== */
@@ -115,7 +115,7 @@ body {
   gap: 6px;
   padding: 10px 16px 16px;
 }
-#screen-welcome .orb-wrapper { width: 70px !important; height: 70px !important; min-width: 70px !important; min-height: 70px !important; display: flex !important; }
+#screen-welcome .orb-wrapper { width: 110px !important; height: 110px !important; min-width: 110px !important; min-height: 110px !important; display: flex !important; }
 #screen-welcome .character-gallery { flex-shrink: 1; min-height: 0; overflow: hidden; }
 #screen-welcome .btn-start {
   margin-top: auto;
