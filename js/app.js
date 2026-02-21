@@ -152,5 +152,11 @@ JJ.app = {
 
 document.addEventListener('DOMContentLoaded', function () { JJ.app.init(); });
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+  window.addEventListener('load', function () {
+    // Force old service workers to update immediately
+    navigator.serviceWorker.getRegistrations().then(function (regs) {
+      regs.forEach(function (reg) { reg.update(); });
+    });
+    navigator.serviceWorker.register('sw.js').catch(function () {});
+  });
 }
