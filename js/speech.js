@@ -1,6 +1,6 @@
 /**
  * Junior Jarvis — Speech Module
- * Push-to-talk mic. Friendly British voice. Auto-release after 6s.
+ * Push-to-talk mic. Smooth JARVIS-style voice. Auto-release after 6s.
  */
 var JJ = window.JJ || {};
 
@@ -22,12 +22,14 @@ JJ.speech = {
       var self = this;
       var loadVoices = function () {
         var voices = self.synth.getVoices();
+        // Smooth, warm, JARVIS-like voice — polished American male preferred
         self.voice =
-          voices.find(function (v) { return v.name === 'Google UK English Male'; }) ||
-          voices.find(function (v) { return v.name.indexOf('George') !== -1 && v.lang === 'en-GB'; }) ||
-          voices.find(function (v) { return v.name.indexOf('Daniel') !== -1 && v.lang === 'en-GB'; }) ||
-          voices.find(function (v) { return v.lang === 'en-GB' && v.name.toLowerCase().indexOf('male') !== -1; }) ||
-          voices.find(function (v) { return v.lang === 'en-GB'; }) ||
+          voices.find(function (v) { return v.name === 'Google US English'; }) ||
+          voices.find(function (v) { return v.name.indexOf('David') !== -1 && v.lang === 'en-US'; }) ||
+          voices.find(function (v) { return v.name.indexOf('Mark') !== -1 && v.lang === 'en-US'; }) ||
+          voices.find(function (v) { return v.name.indexOf('Guy') !== -1 && v.lang === 'en-US'; }) ||
+          voices.find(function (v) { return v.lang === 'en-US' && v.name.toLowerCase().indexOf('male') !== -1; }) ||
+          voices.find(function (v) { return v.lang === 'en-US'; }) ||
           voices.find(function (v) { return v.lang.indexOf('en') === 0; }) ||
           voices[0] || null;
       };
@@ -48,8 +50,8 @@ JJ.speech = {
     this.synth.cancel();
     var u = new SpeechSynthesisUtterance(text);
     if (this.voice) u.voice = this.voice;
-    u.rate = 1.0;
-    u.pitch = 0.95;
+    u.rate = 0.95;
+    u.pitch = 1.05;
     if (onEnd) { u.onend = onEnd; u.onerror = onEnd; }
     this.synth.speak(u);
     this._keepAlive();

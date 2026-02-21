@@ -5,7 +5,7 @@
 
 /* ========== Reset & Base ========== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
+html, body { height: 100%; overflow-x: hidden; overflow-y: auto; }
 
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -13,7 +13,7 @@ body {
   color: #fff;
   text-align: center;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 100vh; padding: 16px;
+  min-height: 100vh; padding: 24px 16px;
   -webkit-user-select: none; user-select: none;
   position: relative;
 }
@@ -123,21 +123,25 @@ body {
 
 /* ========== Character Gallery ========== */
 .character-gallery {
-  display: flex; gap: 10px; overflow-x: auto; padding: 8px 4px;
-  max-width: 100%; scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 8px 4px;
+  max-width: 500px;
+  width: 100%;
 }
-.character-gallery::-webkit-scrollbar { display: none; }
 
 .gallery-item {
-  display: flex; flex-direction: column; align-items: center; gap: 4px;
-  min-width: 64px; padding: 8px 6px; border-radius: 16px;
-  border: 1px solid rgba(255,255,255,0.1);
-  transition: transform 0.2s;
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 6px;
+  padding: 14px 6px; border-radius: 18px;
+  border: 1px solid rgba(255,255,255,0.12);
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
 }
 .gallery-item:active { transform: scale(0.93); }
-.gallery-emoji { font-size: 1.8em; }
-.gallery-name { font-size: 0.6em; color: rgba(255,255,255,0.8); white-space: nowrap; }
+.gallery-item:hover { box-shadow: 0 0 16px rgba(0,255,255,0.15); }
+.gallery-emoji { font-size: 2.4em; }
+.gallery-name { font-size: 0.75em; color: rgba(255,255,255,0.85); white-space: nowrap; font-weight: 600; }
 
 /* ========== How to Play ========== */
 .how-to-play { padding: 14px 20px; max-width: 420px; width: 100%; }
@@ -271,7 +275,10 @@ body {
   .btn { font-size: 1.1em; padding: 12px 18px; min-width: 90px; }
   .btn-start { font-size: 1.2em; padding: 14px 28px; }
   .character-card { width: 260px; }
-  .gallery-item { min-width: 56px; }
+  .character-gallery { grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .gallery-emoji { font-size: 2em; }
+  .gallery-name { font-size: 0.65em; }
+  .gallery-item { padding: 10px 4px; }
 }
 
 @media (min-width: 1024px) {

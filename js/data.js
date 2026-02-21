@@ -93,7 +93,7 @@ JJ.messages = {
                  'You can say your answer out loud, or just tap the buttons. Ready? Let\'s go!',
   start:         'Awesome! Let me put on my thinking cap. Here comes my first question!',
   guessPrefix:   'Oh oh oh, I think I know! Is it... ',
-  correct:       'Woohoo, I got it! High five — you\'re a natural AI thinker!',
+  correct:       'I knew it! High five — you\'re a natural AI thinker!',
   correctDetail: 'That was so much fun! Ask your parents about NexusBlue\'s awesome AI courses — you could learn to build cool stuff like this!',
   incorrect:     'Aw, I didn\'t get it this time! But that\'s okay — even the best AI learns from its mistakes!',
   encourageRetry:'Want to play again? I bet I\'ll figure it out next round!',
