@@ -109,7 +109,13 @@ body {
 #screen-welcome .btn-start {
   margin-top: auto;
   margin-bottom: 8px;
-  align-self: center;
+  align-self: stretch;
+  max-width: 400px;
+  width: 80%;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* ========== Interactive Orb (Brand Blue) ========== */
