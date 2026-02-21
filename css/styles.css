@@ -6,7 +6,7 @@
 
 /* ========== Reset & Base ========== */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow-x: hidden; overflow-y: auto; }
+html { height: 100%; overflow: hidden; }
 
 body {
   font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -15,10 +15,13 @@ body {
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
+  background-attachment: fixed;
   color: #fff;
   text-align: center;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  min-height: 100vh; padding: 20px 16px;
+  display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
+  height: 100vh; height: 100dvh;
+  overflow: hidden;
+  padding: 0;
   -webkit-user-select: none; user-select: none;
   position: relative;
 }
@@ -95,31 +98,26 @@ body {
 /* ========== Screens ========== */
 .screen {
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  width: 100%; max-width: 600px; gap: 16px;
+  width: 100%; max-width: 600px; gap: 10px;
   position: relative; z-index: 1;
-  padding: 12px 0;
+  height: 100vh; height: 100dvh;
+  padding: 12px 16px;
+  overflow: hidden;
 }
 
-/* Welcome screen: spread content so logo drops down, button anchors near bottom */
+/* Welcome screen: logo at top, button pinned at bottom, content fills middle */
 #screen-welcome {
   justify-content: flex-start;
-  height: calc(100vh - 40px);
-  max-height: calc(100vh - 40px);
-  overflow: hidden;
   gap: 6px;
+  padding: 10px 16px 16px;
 }
 #screen-welcome .orb-wrapper { display: none; }
-#screen-welcome .character-gallery { flex-shrink: 1; overflow: hidden; }
+#screen-welcome .character-gallery { flex-shrink: 1; min-height: 0; overflow: hidden; }
 #screen-welcome .btn-start {
   margin-top: auto;
   flex-shrink: 0;
-  align-self: center;
-  max-width: 400px;
   width: 80%;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  max-width: 400px;
 }
 
 /* ========== Interactive Orb (Brand Blue) ========== */
@@ -307,36 +305,35 @@ body {
   .btn { font-size: 1.1em; padding: 10px 16px; min-width: 85px; }
   .btn-start { font-size: 1.2em; padding: 12px 24px; }
   .character-card { width: 260px; }
-  .character-gallery { grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .character-gallery { gap: 6px; }
   .gallery-emoji { font-size: 1.8em; }
   .gallery-name { font-size: 0.6em; }
-  .gallery-item { padding: 8px 4px; }
-  .nb-logo { width: 180px; }
+  .gallery-item { padding: 6px 4px; }
+  .nb-logo { width: 180px; padding: 8px 18px; }
 }
 
-/* ========== Responsive — iPad & Desktop ========== */
+/* ========== Responsive — Tablet & Desktop ========== */
 @media (min-width: 768px) {
-  body { padding: 28px 24px; }
-  .screen { max-width: 700px; gap: 14px; }
+  .screen { max-width: 700px; gap: 12px; padding: 16px 20px; }
   .title { font-size: 3em; }
   .tagline { font-size: 1.2em; }
   .orb-wrapper { width: 120px; height: 120px; min-width: 120px; min-height: 120px; }
   .question { font-size: 2em; }
   .question-card { padding: 28px 32px; max-width: 600px; }
   .btn { font-size: 1.4em; padding: 16px 28px; min-width: 130px; }
-  .btn-start { font-size: 1.6em; padding: 20px 44px; }
+  .btn-start { font-size: 1.6em; padding: 18px 40px; }
   .character-card { width: 340px; padding: 32px 26px; }
-  .character-gallery { max-width: 580px; gap: 12px; }
-  .gallery-emoji { font-size: 2.8em; }
-  .gallery-item { padding: 16px 8px; }
-  .gallery-name { font-size: 0.85em; }
+  .character-gallery { max-width: 580px; gap: 10px; }
+  .gallery-emoji { font-size: 2.6em; }
+  .gallery-item { padding: 12px 8px; }
+  .gallery-name { font-size: 0.8em; }
   .nb-logo { width: 260px; }
   .nb-logo-footer { width: 160px; }
-  .how-to-play { max-width: 500px; padding: 18px 24px; }
-  .step-text { font-size: 1.05em; }
+  .how-to-play { max-width: 500px; padding: 10px 20px; }
+  .step-text { font-size: 1em; }
 }
 
-/* ========== Responsive — iPad Landscape ========== */
+/* ========== Responsive — Large screens ========== */
 @media (min-width: 1024px) {
   .screen { max-width: 800px; }
   .title { font-size: 3.5em; }
