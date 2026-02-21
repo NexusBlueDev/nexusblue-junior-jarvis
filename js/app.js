@@ -1,6 +1,6 @@
 /**
  * Junior Jarvis — Main Application Controller
- * Orchestrates game flow with always-on mic, sound effects, and emoji reactions.
+ * Orchestrates game flow with sound effects and emoji reactions. Button-only input.
  */
 var JJ = window.JJ || {};
 
@@ -17,7 +17,6 @@ JJ.app = {
     JJ.ui.setOrbState('idle');
 
     this.bindEvents();
-    this.bindMicIndicator();
 
     var self = this;
     setTimeout(function () {
@@ -26,15 +25,6 @@ JJ.app = {
         JJ.ui.setOrbState('idle');
       });
     }, 600);
-  },
-
-  bindMicIndicator: function () {
-    JJ.speech._onListeningChange = function (listening) {
-      JJ.ui.setMicActive(listening);
-      if (listening) {
-        JJ.ui.setOrbState('listening');
-      }
-    };
   },
 
   bindEvents: function () {
@@ -55,7 +45,6 @@ JJ.app = {
     if (this.state === 'playing') return;
     this.state = 'playing';
     this._answerLock = false;
-    JJ.speech.requestMicPermission();
     JJ.engine.reset();
     JJ.metrics.recordGameStart();
     JJ.ui.updateMetrics(JJ.metrics.getPlayCount());
@@ -87,22 +76,20 @@ JJ.app = {
 
     var self = this;
     JJ.ui.setOrbState('speaking');
-    // Cancel any lingering speech first
     JJ.speech.cancelSpeech();
     JJ.speech.speak(question.text, function () {
-      if (self._answerLock) return; // User already clicked a button during speech
-      JJ.ui.setOrbState('listening');
-      JJ.speech.listen(function (value) { self.answer(value); });
+      if (self._answerLock) return;
+      JJ.ui.setOrbState('idle');
     });
   },
 
   answer: function (value) {
     if (this.state !== 'playing') return;
-    if (this._answerLock) return; // Prevent double-processing
+    if (this._answerLock) return;
     this._answerLock = true;
 
     JJ.ui.setAnswerButtonsEnabled(false);
-    JJ.speech.cancelSpeech(); // Stop any ongoing speech AND listening
+    JJ.speech.cancelSpeech();
     JJ.effects.soundTap();
     JJ.effects.answerReaction(value);
     JJ.ui.setOrbState('thinking');

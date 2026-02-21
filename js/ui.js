@@ -138,17 +138,12 @@ JJ.ui = {
   },
 
   setOrbState: function (state) {
-    var states = ['idle', 'speaking', 'listening', 'thinking', 'celebrating'];
+    var states = ['idle', 'speaking', 'thinking', 'celebrating'];
     for (var i = 0; i < this.orbEls.length; i++) {
       var el = this.orbEls[i];
       for (var j = 0; j < states.length; j++) {
         el.classList.toggle('orb-' + states[j], states[j] === state);
       }
     }
-  },
-
-  setMicActive: function (active) {
-    var btn = document.getElementById('btn-mic');
-    if (btn) btn.classList.toggle('mic-active', active);
   }
 };
