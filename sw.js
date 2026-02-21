@@ -4,7 +4,7 @@
  * falls back to cache when offline (expo booth scenario).
  */
 
-var CACHE_NAME = 'junior-jarvis-v8';
+var CACHE_NAME = 'junior-jarvis-v9';
 var ASSETS = [
   './',
   'index.html',
@@ -18,7 +18,9 @@ var ASSETS = [
   'js/app.js',
   'manifest.json',
   'assets/icon-192.svg',
-  'assets/icon-512.svg'
+  'assets/icon-512.svg',
+  'logo/NexusBlueLogo2white_backandblue_trans.png',
+  'logo/background_jarvis_image.jpg'
 ];
 
 self.addEventListener('install', function (event) {
