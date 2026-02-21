@@ -239,6 +239,73 @@ body {
 .confetti-piece { position: absolute; top: 50%; width: 10px; height: 10px; border-radius: 2px; animation: confettiBurst ease-out forwards; opacity: 0; }
 @keyframes confettiBurst { 0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; } 100% { transform: translate(var(--confetti-x,100px), var(--confetti-y,-200px)) rotate(var(--confetti-r,360deg)) scale(0.3); opacity: 0; } }
 
+/* ========== Futuristic Classroom Scene ========== */
+.classroom-scene {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  height: 220px; pointer-events: none; z-index: 0;
+  overflow: hidden;
+}
+
+.classroom-floor {
+  position: absolute; bottom: 0; left: 0; right: 0; height: 60px;
+  background: linear-gradient(180deg, rgba(0,20,60,0) 0%, rgba(0,40,80,0.4) 40%, rgba(0,60,120,0.3) 100%);
+  border-top: 1px solid rgba(0,255,255,0.08);
+}
+
+.holo-board {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  width: 120px; height: 40px; border-radius: 6px;
+  border: 1px solid rgba(0,255,255,0.12);
+  background: rgba(0,255,255,0.03);
+  box-shadow: 0 0 20px rgba(0,255,255,0.05);
+}
+
+.desk-row {
+  position: absolute; left: 0; right: 0;
+  display: flex; justify-content: center; gap: 40px;
+}
+.desk-row-back { bottom: 70px; opacity: 0.5; transform: scale(0.8); }
+.desk-row-front { bottom: 30px; opacity: 0.7; }
+
+.desk {
+  display: flex; flex-direction: column; align-items: center; gap: 2px;
+  position: relative;
+}
+
+.kid {
+  font-size: 1.8em;
+  filter: drop-shadow(0 0 6px rgba(0,255,255,0.2));
+  animation: kidBob 3s ease-in-out infinite;
+}
+.desk-row-front .desk:nth-child(1) .kid { animation-delay: 0s; }
+.desk-row-front .desk:nth-child(2) .kid { animation-delay: 0.8s; }
+.desk-row-front .desk:nth-child(3) .kid { animation-delay: 1.6s; }
+.desk-row-back .desk:nth-child(1) .kid { animation-delay: 0.3s; }
+.desk-row-back .desk:nth-child(2) .kid { animation-delay: 1.1s; }
+.desk-row-back .desk:nth-child(3) .kid { animation-delay: 1.9s; }
+.desk-row-back .desk:nth-child(4) .kid { animation-delay: 0.6s; }
+
+@keyframes kidBob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3px); }
+}
+
+.holo-screen {
+  width: 28px; height: 18px; border-radius: 3px;
+  background: linear-gradient(135deg, rgba(0,255,255,0.08), rgba(123,104,238,0.08));
+  border: 1px solid rgba(0,255,255,0.15);
+  box-shadow: 0 0 8px rgba(0,255,255,0.06);
+  animation: holoFlicker 4s ease-in-out infinite;
+}
+.desk:nth-child(2) .holo-screen { animation-delay: 1s; }
+.desk:nth-child(3) .holo-screen { animation-delay: 2s; }
+.desk:nth-child(4) .holo-screen { animation-delay: 0.5s; }
+
+@keyframes holoFlicker {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; box-shadow: 0 0 12px rgba(0,255,255,0.12); }
+}
+
 /* ========== Metrics ========== */
 .metrics {
   position: fixed; bottom: 10px; right: 14px;
