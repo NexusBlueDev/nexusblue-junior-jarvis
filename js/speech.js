@@ -2,7 +2,7 @@
  * Junior Jarvis — Speech Module
  * Web Speech API wrapper with graceful fallbacks.
  * TTS uses British English voice when available.
- * STT listens for natural yes/no/maybe responses.
+ * STT is explicitly acquired/released to avoid holding the mic.
  */
 var JJ = window.JJ || {};
 
@@ -11,6 +11,8 @@ JJ.speech = {
   voice: null,
   recognition: null,
   available: { tts: false, stt: false },
+  _listening: false,
+  _onListeningChange: null, // callback(bool) — UI uses this for mic indicator
 
   init: function () {
     // Text-to-Speech
@@ -21,8 +23,17 @@ JJ.speech = {
       var self = this;
       var loadVoices = function () {
         var voices = self.synth.getVoices();
-        // Priority: British male → any British → any English → first available
+        // Priority chain for a deep, authoritative Jarvis voice:
+        // 1. Google UK English Male (Chrome) — closest to Jarvis
+        // 2. Microsoft George (Edge/Windows) — deep British male
+        // 3. Daniel (macOS/Safari) — British male
+        // 4. Any en-GB male voice
+        // 5. Any en-GB voice
+        // 6. Any English voice
         self.voice =
+          voices.find(function (v) { return v.name === 'Google UK English Male'; }) ||
+          voices.find(function (v) { return v.name.indexOf('George') !== -1 && v.lang === 'en-GB'; }) ||
+          voices.find(function (v) { return v.name.indexOf('Daniel') !== -1 && v.lang === 'en-GB'; }) ||
           voices.find(function (v) { return v.lang === 'en-GB' && v.name.toLowerCase().indexOf('male') !== -1; }) ||
           voices.find(function (v) { return v.lang === 'en-GB'; }) ||
           voices.find(function (v) { return v.lang.indexOf('en') === 0; }) ||
@@ -43,21 +54,24 @@ JJ.speech = {
   },
 
   /**
-   * Speak text via TTS. Calls onEnd when finished (or immediately if TTS unavailable).
+   * Speak text via TTS. Calls onEnd when finished.
+   * Mic is always released before speaking starts.
    */
   speak: function (text, onEnd) {
+    // Always release mic before speaking to prevent holding
+    this.stopListening();
+
     if (!this.available.tts || !this.synth) {
       if (onEnd) onEnd();
       return;
     }
 
-    // Cancel pending speech
     this.synth.cancel();
 
     var utterance = new SpeechSynthesisUtterance(text);
     if (this.voice) utterance.voice = this.voice;
-    utterance.rate = 1.05;
-    utterance.pitch = 1.0;
+    utterance.rate = 0.95;   // Measured, deliberate pace — like Jarvis
+    utterance.pitch = 0.85;  // Slightly deeper for authoritative male tone
 
     if (onEnd) {
       utterance.onend = onEnd;
@@ -65,14 +79,9 @@ JJ.speech = {
     }
 
     this.synth.speak(utterance);
-
-    // Chrome bug workaround: synthesis can pause on long text
     this._keepAlive();
   },
 
-  /**
-   * Chrome pauses speechSynthesis after ~15s. This keeps it alive.
-   */
   _keepAlive: function () {
     var self = this;
     if (this._keepAliveTimer) clearInterval(this._keepAliveTimer);
@@ -87,60 +96,99 @@ JJ.speech = {
   },
 
   /**
-   * Listen for voice input. Calls callback(value) with:
-   * 1 = yes, 0 = no, 0.75 = probably, 0.25 = probably not, null = don't know
+   * Start listening for voice input. Acquires mic, calls callback(value) once,
+   * then automatically releases mic. Only one session at a time.
    */
   listen: function (callback) {
     if (!this.available.stt) return;
 
+    // Release any existing session first
+    this.stopListening();
+
     var SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    this.recognition = new SpeechRecognition();
-    this.recognition.continuous = false;
-    this.recognition.interimResults = false;
-    this.recognition.lang = 'en-US';
-    this.recognition.maxAlternatives = 1;
+    var self = this;
 
-    this.recognition.onresult = function (e) {
-      var transcript = e.results[0][0].transcript.toLowerCase().trim();
-      var value;
+    // Small delay to ensure previous session is fully released
+    setTimeout(function () {
+      var rec = new SpeechRecognition();
+      rec.continuous = false;
+      rec.interimResults = false;
+      rec.lang = 'en-US';
+      rec.maxAlternatives = 1;
 
-      // Order matters: check multi-word phrases before single words
-      if (/\b(probably not|maybe not|not really|i don'?t think so)\b/.test(transcript)) {
-        value = 0.25;
-      } else if (/\b(yes|yeah|yep|yup|affirmative|sure|correct|absolutely|definitely)\b/.test(transcript)) {
-        value = 1;
-      } else if (/\b(no|nope|nah|negative|incorrect|never)\b/.test(transcript)) {
-        value = 0;
-      } else if (/\b(probably|maybe|possibly|i think so|sort of|kind of)\b/.test(transcript)) {
-        value = 0.75;
-      } else if (/\b(don'?t know|uncertain|unsure|no idea|not sure|skip|pass)\b/.test(transcript)) {
-        value = null;
+      rec.onstart = function () {
+        self._listening = true;
+        if (self._onListeningChange) self._onListeningChange(true);
+      };
+
+      rec.onresult = function (e) {
+        var transcript = e.results[0][0].transcript.toLowerCase().trim();
+        var value;
+
+        if (/\b(probably not|maybe not|not really|i don'?t think so)\b/.test(transcript)) {
+          value = 0.25;
+        } else if (/\b(yes|yeah|yep|yup|affirmative|sure|correct|absolutely|definitely)\b/.test(transcript)) {
+          value = 1;
+        } else if (/\b(no|nope|nah|negative|incorrect|never)\b/.test(transcript)) {
+          value = 0;
+        } else if (/\b(probably|maybe|possibly|i think so|sort of|kind of)\b/.test(transcript)) {
+          value = 0.75;
+        } else if (/\b(don'?t know|uncertain|unsure|no idea|not sure|skip|pass)\b/.test(transcript)) {
+          value = null;
+        }
+
+        // Release mic immediately after getting a result
+        self.stopListening();
+
+        if (value !== undefined) {
+          callback(value);
+        }
+      };
+
+      rec.onend = function () {
+        // Mic released (either by us or naturally after silence)
+        self._listening = false;
+        self.recognition = null;
+        if (self._onListeningChange) self._onListeningChange(false);
+      };
+
+      rec.onerror = function () {
+        self._listening = false;
+        self.recognition = null;
+        if (self._onListeningChange) self._onListeningChange(false);
+      };
+
+      self.recognition = rec;
+
+      try {
+        rec.start();
+      } catch (e) {
+        self._listening = false;
+        self.recognition = null;
       }
-
-      if (value !== undefined) {
-        callback(value);
-      }
-    };
-
-    this.recognition.onerror = function () {
-      // Silent fail — touch buttons are the primary fallback
-    };
-
-    try {
-      this.recognition.start();
-    } catch (e) {
-      // Recognition may already be active or unavailable
-    }
+    }, 100);
   },
 
+  /**
+   * Explicitly release the microphone.
+   */
   stopListening: function () {
     if (this.recognition) {
       try { this.recognition.abort(); } catch (e) { /* ignore */ }
       this.recognition = null;
     }
+    if (this._listening) {
+      this._listening = false;
+      if (this._onListeningChange) this._onListeningChange(false);
+    }
+  },
+
+  isListening: function () {
+    return this._listening;
   },
 
   cancelSpeech: function () {
+    this.stopListening();
     if (this.synth) {
       this.synth.cancel();
     }

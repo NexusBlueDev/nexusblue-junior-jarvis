@@ -1,12 +1,13 @@
 /**
  * Junior Jarvis — UI Module
- * All DOM manipulation and screen management.
+ * All DOM manipulation, screen management, and orb state.
  */
 var JJ = window.JJ || {};
 
 JJ.ui = {
   screens: {},
   answerBtns: [],
+  orbEls: [],
 
   init: function () {
     this.screens = {
@@ -23,6 +24,9 @@ JJ.ui = {
       document.getElementById('btn-probably-not'),
       document.getElementById('btn-uncertain')
     ];
+
+    // Collect all orb wrappers for state changes
+    this.orbEls = document.querySelectorAll('.orb-wrapper');
   },
 
   showScreen: function (name) {
@@ -36,7 +40,6 @@ JJ.ui = {
       }
     });
 
-    // Remove celebration class when leaving result screen
     if (name !== 'result' && this.screens.result) {
       this.screens.result.classList.remove('celebration');
     }
@@ -89,6 +92,7 @@ JJ.ui = {
       if (msg) msg.textContent = JJ.messages.correct;
       if (detail) detail.textContent = JJ.messages.correctDetail;
       if (screen) screen.classList.add('celebration');
+      JJ.effects.confetti();
     } else {
       if (icon) icon.textContent = '🔄';
       if (msg) msg.textContent = JJ.messages.incorrect;
@@ -100,5 +104,30 @@ JJ.ui = {
   updateMetrics: function (count) {
     var el = document.getElementById('play-count');
     if (el) el.textContent = count;
+  },
+
+  /**
+   * Set orb visual state across all orb instances.
+   * States: 'idle', 'speaking', 'listening', 'thinking', 'celebrating'
+   */
+  setOrbState: function (state) {
+    var states = ['idle', 'speaking', 'listening', 'thinking', 'celebrating'];
+
+    for (var i = 0; i < this.orbEls.length; i++) {
+      var el = this.orbEls[i];
+      for (var j = 0; j < states.length; j++) {
+        el.classList.toggle('orb-' + states[j], states[j] === state);
+      }
+    }
+  },
+
+  /**
+   * Show/hide the mic listening indicator.
+   */
+  setMicActive: function (active) {
+    var badge = document.getElementById('mic-badge');
+    if (badge) {
+      badge.classList.toggle('visible', active);
+    }
   }
 };

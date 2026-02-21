@@ -3,7 +3,7 @@
  * Cache-first strategy for full offline support.
  */
 
-var CACHE_NAME = 'junior-jarvis-v1';
+var CACHE_NAME = 'junior-jarvis-v2';
 var ASSETS = [
   './',
   'index.html',
@@ -11,6 +11,7 @@ var ASSETS = [
   'js/data.js',
   'js/engine.js',
   'js/speech.js',
+  'js/effects.js',
   'js/ui.js',
   'js/metrics.js',
   'js/app.js',

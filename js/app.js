@@ -14,16 +14,34 @@ JJ.app = {
   init: function () {
     JJ.speech.init();
     JJ.ui.init();
+    JJ.effects.init();
     JJ.ui.updateMetrics(JJ.metrics.getPlayCount());
     JJ.ui.showScreen('welcome');
+    JJ.ui.setOrbState('idle');
 
     this.bindEvents();
+    this.bindSpeechIndicator();
 
     // Speak welcome after voices have time to load
     var self = this;
     setTimeout(function () {
-      JJ.speech.speak(JJ.messages.welcome);
+      JJ.ui.setOrbState('speaking');
+      JJ.speech.speak(JJ.messages.welcome, function () {
+        JJ.ui.setOrbState('idle');
+      });
     }, 600);
+  },
+
+  /**
+   * Wire up speech mic state to orb + mic badge visuals.
+   */
+  bindSpeechIndicator: function () {
+    JJ.speech._onListeningChange = function (listening) {
+      JJ.ui.setMicActive(listening);
+      if (listening) {
+        JJ.ui.setOrbState('listening');
+      }
+    };
   },
 
   bindEvents: function () {
@@ -38,13 +56,6 @@ JJ.app = {
     document.getElementById('btn-correct').addEventListener('click', function () { self.feedback(true); });
     document.getElementById('btn-incorrect').addEventListener('click', function () { self.feedback(false); });
     document.getElementById('btn-restart').addEventListener('click', function () { self.restart(); });
-
-    // Allow Start via voice on welcome screen
-    if (JJ.speech.available.stt) {
-      document.getElementById('btn-start').addEventListener('focus', function () {
-        JJ.speech.listen(function () { self.startGame(); });
-      });
-    }
   },
 
   startGame: function () {
@@ -58,7 +69,9 @@ JJ.app = {
     JJ.ui.updateProgress(0, JJ.engine.getTotalQuestions());
 
     var self = this;
+    JJ.ui.setOrbState('speaking');
     JJ.speech.speak(JJ.messages.start, function () {
+      JJ.ui.setOrbState('thinking');
       setTimeout(function () { self.askQuestion(); }, 400);
     });
   },
@@ -66,7 +79,6 @@ JJ.app = {
   askQuestion: function () {
     if (this.state !== 'playing') return;
 
-    // Check if we should guess now
     if (JJ.engine.shouldGuess()) {
       this.makeGuess();
       return;
@@ -85,7 +97,9 @@ JJ.app = {
     JJ.ui.setAnswerButtonsEnabled(true);
 
     var self = this;
+    JJ.ui.setOrbState('speaking');
     JJ.speech.speak(question.text, function () {
+      // Orb transitions to listening state via _onListeningChange callback
       JJ.speech.listen(function (value) { self.answer(value); });
     });
   },
@@ -93,9 +107,9 @@ JJ.app = {
   answer: function (value) {
     if (this.state !== 'playing') return;
 
-    // Prevent double-tap
     JJ.ui.setAnswerButtonsEnabled(false);
     JJ.speech.stopListening();
+    JJ.ui.setOrbState('thinking');
     JJ.engine.processAnswer(value);
 
     var self = this;
@@ -106,13 +120,17 @@ JJ.app = {
 
   makeGuess: function () {
     this.state = 'guessing';
+    JJ.speech.stopListening();
     var character = JJ.engine.getGuess();
 
     JJ.ui.showScreen('guess');
     JJ.ui.showGuess(character);
 
+    JJ.ui.setOrbState('speaking');
     var guessText = JJ.messages.guessPrefix + character.name + '. ' + character.fact;
-    JJ.speech.speak(guessText);
+    JJ.speech.speak(guessText, function () {
+      JJ.ui.setOrbState('idle');
+    });
   },
 
   feedback: function (correct) {
@@ -122,6 +140,12 @@ JJ.app = {
     JJ.ui.showScreen('result');
     JJ.ui.showResult(correct);
 
+    if (correct) {
+      JJ.ui.setOrbState('celebrating');
+    } else {
+      JJ.ui.setOrbState('idle');
+    }
+
     var msg = correct ? JJ.messages.correct : JJ.messages.incorrect;
     JJ.speech.speak(msg);
   },
@@ -129,13 +153,16 @@ JJ.app = {
   restart: function () {
     this.state = 'welcome';
     JJ.speech.cancelSpeech();
-    JJ.speech.stopListening();
     JJ.ui.showScreen('welcome');
     JJ.ui.updateProgress(0, JJ.engine.getTotalQuestions());
     JJ.ui.updateMetrics(JJ.metrics.getPlayCount());
+    JJ.ui.setOrbState('idle');
 
     setTimeout(function () {
-      JJ.speech.speak(JJ.messages.welcome);
+      JJ.ui.setOrbState('speaking');
+      JJ.speech.speak(JJ.messages.welcome, function () {
+        JJ.ui.setOrbState('idle');
+      });
     }, 300);
   }
 };
@@ -148,8 +175,6 @@ document.addEventListener('DOMContentLoaded', function () {
 // Register Service Worker for offline PWA support
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function () {
-    navigator.serviceWorker.register('sw.js').catch(function () {
-      // SW registration failed — app still works, just not offline-installable
-    });
+    navigator.serviceWorker.register('sw.js').catch(function () {});
   });
 }
