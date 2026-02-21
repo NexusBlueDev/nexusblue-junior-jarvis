@@ -6,6 +6,7 @@ var JJ = window.JJ || {};
 
 JJ.app = {
   state: 'welcome',
+  _answerLock: false,
 
   init: function () {
     JJ.speech.init();
@@ -53,7 +54,7 @@ JJ.app = {
   startGame: function () {
     if (this.state === 'playing') return;
     this.state = 'playing';
-    // Grab mic permission on first interaction so Edge won't re-prompt each question
+    this._answerLock = false;
     JJ.speech.requestMicPermission();
     JJ.engine.reset();
     JJ.metrics.recordGameStart();
@@ -72,6 +73,7 @@ JJ.app = {
 
   askQuestion: function () {
     if (this.state !== 'playing') return;
+    this._answerLock = false;
 
     if (JJ.engine.shouldGuess()) { this.makeGuess(); return; }
     var qIdx = JJ.engine.selectQuestion();
@@ -85,8 +87,10 @@ JJ.app = {
 
     var self = this;
     JJ.ui.setOrbState('speaking');
+    // Cancel any lingering speech first
+    JJ.speech.cancelSpeech();
     JJ.speech.speak(question.text, function () {
-      // Auto-start always-on listening after question is spoken
+      if (self._answerLock) return; // User already clicked a button during speech
       JJ.ui.setOrbState('listening');
       JJ.speech.listen(function (value) { self.answer(value); });
     });
@@ -94,20 +98,24 @@ JJ.app = {
 
   answer: function (value) {
     if (this.state !== 'playing') return;
+    if (this._answerLock) return; // Prevent double-processing
+    this._answerLock = true;
+
     JJ.ui.setAnswerButtonsEnabled(false);
-    JJ.speech.stopListening();
+    JJ.speech.cancelSpeech(); // Stop any ongoing speech AND listening
     JJ.effects.soundTap();
     JJ.effects.answerReaction(value);
     JJ.ui.setOrbState('thinking');
     JJ.engine.processAnswer(value);
 
     var self = this;
-    setTimeout(function () { self.askQuestion(); }, 500);
+    setTimeout(function () { self.askQuestion(); }, 600);
   },
 
   makeGuess: function () {
     this.state = 'guessing';
-    JJ.speech.stopListening();
+    this._answerLock = false;
+    JJ.speech.cancelSpeech();
     var character = JJ.engine.getGuess();
 
     JJ.effects.soundReveal();
@@ -131,6 +139,7 @@ JJ.app = {
 
   restart: function () {
     this.state = 'welcome';
+    this._answerLock = false;
     JJ.speech.cancelSpeech();
     JJ.effects.soundTap();
     JJ.ui.showScreen('welcome');
