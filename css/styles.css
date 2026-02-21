@@ -78,11 +78,15 @@ body {
   margin-top: 4px;
 }
 .nb-logo-footer {
-  width: 140px;
+  width: 160px;
   height: auto;
-  opacity: 0.85;
+  opacity: 1;
   margin-top: 8px;
-  filter: drop-shadow(0 0 8px rgba(255,255,255,0.5)) drop-shadow(0 0 18px rgba(250,112,34,0.3));
+  filter: drop-shadow(0 0 10px rgba(255,255,255,0.7)) drop-shadow(0 0 25px rgba(250,112,34,0.4));
+  background: rgba(255,255,255,0.12);
+  padding: 10px 20px;
+  border-radius: 14px;
+  border: 2px solid rgba(250,112,34,0.6);
 }
 
 /* ========== Floating Particles ========== */
@@ -111,7 +115,7 @@ body {
   gap: 6px;
   padding: 10px 16px 16px;
 }
-#screen-welcome .orb-wrapper { width: 70px; height: 70px; min-width: 70px; min-height: 70px; }
+#screen-welcome .orb-wrapper { width: 70px !important; height: 70px !important; min-width: 70px !important; min-height: 70px !important; display: flex !important; }
 #screen-welcome .character-gallery { flex-shrink: 1; min-height: 0; overflow: hidden; }
 #screen-welcome .btn-start {
   margin-top: auto;
@@ -287,6 +291,23 @@ body {
 .confetti-container { position: fixed; inset: 0; pointer-events: none; z-index: 100; overflow: hidden; }
 .confetti-piece { position: absolute; top: 50%; width: 10px; height: 10px; border-radius: 2px; animation: confettiBurst ease-out forwards; opacity: 0; }
 @keyframes confettiBurst { 0% { transform: translate(0,0) rotate(0deg) scale(1); opacity: 1; } 100% { transform: translate(var(--confetti-x,100px), var(--confetti-y,-200px)) rotate(var(--confetti-r,360deg)) scale(0.3); opacity: 0; } }
+
+/* ========== Tap-to-Start Overlay ========== */
+.tap-overlay {
+  position: fixed; inset: 0; z-index: 200;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,0.7);
+  cursor: pointer;
+  animation: overlayPulse 2s ease-in-out infinite;
+}
+.tap-overlay.hidden { display: none; }
+.tap-text {
+  font-size: 1.8em; font-weight: 700; color: #fff;
+  text-shadow: 0 0 20px rgba(70,179,230,0.6);
+  animation: tapBounce 1.5s ease-in-out infinite;
+}
+@keyframes tapBounce { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@keyframes overlayPulse { 0%,100% { background: rgba(0,0,0,0.7); } 50% { background: rgba(0,0,0,0.6); } }
 
 /* ========== Metrics ========== */
 .metrics {
