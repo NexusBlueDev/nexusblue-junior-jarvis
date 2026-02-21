@@ -1,6 +1,6 @@
 /**
  * Junior Jarvis — Speech Module
- * Push-to-talk mic. Smooth JARVIS-style voice. Auto-release after 6s.
+ * Always-on mic with auto-restart. Male JARVIS-style voice.
  */
 var JJ = window.JJ || {};
 
@@ -10,9 +10,9 @@ JJ.speech = {
   recognition: null,
   available: { tts: false, stt: false },
   _listening: false,
-  _listenTimer: null,
   _micTimeout: null,
   _onListeningChange: null,
+  _answerCallback: null,
 
   init: function () {
     if ('speechSynthesis' in window) {
@@ -22,13 +22,18 @@ JJ.speech = {
       var self = this;
       var loadVoices = function () {
         var voices = self.synth.getVoices();
-        // Smooth, warm, JARVIS-like voice — polished American male preferred
+        // JARVIS-style: must be male. Explicit male voices first.
         self.voice =
-          voices.find(function (v) { return v.name === 'Google US English'; }) ||
+          voices.find(function (v) { return v.name === 'Microsoft David - English (United States)'; }) ||
+          voices.find(function (v) { return v.name === 'Microsoft David Online (Natural) - English (United States)'; }) ||
           voices.find(function (v) { return v.name.indexOf('David') !== -1 && v.lang === 'en-US'; }) ||
           voices.find(function (v) { return v.name.indexOf('Mark') !== -1 && v.lang === 'en-US'; }) ||
           voices.find(function (v) { return v.name.indexOf('Guy') !== -1 && v.lang === 'en-US'; }) ||
-          voices.find(function (v) { return v.lang === 'en-US' && v.name.toLowerCase().indexOf('male') !== -1; }) ||
+          voices.find(function (v) { return v.name === 'Google UK English Male'; }) ||
+          voices.find(function (v) { return v.lang.indexOf('en') === 0 && v.name.toLowerCase().indexOf('male') !== -1; }) ||
+          voices.find(function (v) { return v.name.indexOf('Daniel') !== -1; }) ||
+          voices.find(function (v) { return v.name.indexOf('James') !== -1 && v.lang.indexOf('en') === 0; }) ||
+          voices.find(function (v) { return v.name.indexOf('Alex') !== -1 && v.lang.indexOf('en') === 0; }) ||
           voices.find(function (v) { return v.lang === 'en-US'; }) ||
           voices.find(function (v) { return v.lang.indexOf('en') === 0; }) ||
           voices[0] || null;
@@ -67,65 +72,88 @@ JJ.speech = {
   },
 
   /**
-   * Push-to-talk: start listening, auto-stop after 6s or on result.
-   * Called explicitly by mic button, NOT auto-started after TTS.
+   * Always-on listening: starts mic, auto-restarts after silence/timeout.
+   * Calls callback when a recognized answer is detected.
+   * Keeps restarting until explicitly stopped via stopListening().
    */
   listen: function (callback) {
     if (!this.available.stt) return;
-    this.stopListening();
+    this._answerCallback = callback;
+    this._startRecognition();
+  },
+
+  _startRecognition: function () {
+    if (!this.available.stt || !this._answerCallback) return;
+
+    // Clean up any existing session
+    if (this.recognition) { try { this.recognition.abort(); } catch (e) {} this.recognition = null; }
+    if (this._micTimeout) { clearTimeout(this._micTimeout); this._micTimeout = null; }
 
     var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     var self = this;
     var answered = false;
+    var rec = new SR();
+    rec.continuous = false;
+    rec.interimResults = false;
+    rec.lang = 'en-US';
+    rec.maxAlternatives = 1;
 
-    this._listenTimer = setTimeout(function () {
-      self._listenTimer = null;
-      var rec = new SR();
-      rec.continuous = false;
-      rec.interimResults = false;
-      rec.lang = 'en-US';
-      rec.maxAlternatives = 1;
+    rec.onstart = function () {
+      self._listening = true;
+      if (self._onListeningChange) self._onListeningChange(true);
+    };
 
-      rec.onstart = function () {
-        self._listening = true;
-        if (self._onListeningChange) self._onListeningChange(true);
-      };
-
-      rec.onresult = function (e) {
-        if (answered) return;
-        answered = true;
-        var t = e.results[0][0].transcript.toLowerCase().trim();
-        var v;
-        if (/\b(probably not|maybe not|not really|i don'?t think so)\b/.test(t)) v = 0.25;
-        else if (/\b(yes|yeah|yep|yup|affirmative|sure|correct|absolutely|definitely|uh huh)\b/.test(t)) v = 1;
-        else if (/\b(no|nope|nah|negative|incorrect|never|uh uh)\b/.test(t)) v = 0;
-        else if (/\b(probably|maybe|possibly|i think so|sort of|kind of)\b/.test(t)) v = 0.75;
-        else if (/\b(don'?t know|uncertain|unsure|no idea|not sure|skip|pass)\b/.test(t)) v = null;
+    rec.onresult = function (e) {
+      if (answered) return;
+      answered = true;
+      var t = e.results[0][0].transcript.toLowerCase().trim();
+      var v;
+      if (/\b(probably not|maybe not|not really|i don'?t think so)\b/.test(t)) v = 0.25;
+      else if (/\b(yes|yeah|yep|yup|affirmative|sure|correct|absolutely|definitely|uh huh)\b/.test(t)) v = 1;
+      else if (/\b(no|nope|nah|negative|incorrect|never|uh uh)\b/.test(t)) v = 0;
+      else if (/\b(probably|maybe|possibly|i think so|sort of|kind of)\b/.test(t)) v = 0.75;
+      else if (/\b(don'?t know|uncertain|unsure|no idea|not sure|skip|pass)\b/.test(t)) v = null;
+      if (v !== undefined && self._answerCallback) {
+        var cb = self._answerCallback;
         self.stopListening();
-        if (v !== undefined) callback(v);
-      };
+        cb(v);
+      }
+    };
 
-      rec.onend = function () {
-        self._listening = false; self.recognition = null;
-        if (self._onListeningChange) self._onListeningChange(false);
-      };
-      rec.onerror = function () {
-        self._listening = false; self.recognition = null;
-        if (self._onListeningChange) self._onListeningChange(false);
-      };
+    rec.onend = function () {
+      self._listening = false;
+      self.recognition = null;
+      if (self._onListeningChange) self._onListeningChange(false);
+      // Auto-restart if we haven't answered and callback is still set
+      if (!answered && self._answerCallback) {
+        setTimeout(function () { self._startRecognition(); }, 200);
+      }
+    };
 
-      self.recognition = rec;
-      try { rec.start(); } catch (e) { self._listening = false; self.recognition = null; return; }
+    rec.onerror = function (e) {
+      self._listening = false;
+      self.recognition = null;
+      if (self._onListeningChange) self._onListeningChange(false);
+      // Restart on recoverable errors (no-speech, aborted, network)
+      if (!answered && self._answerCallback && e.error !== 'not-allowed') {
+        setTimeout(function () { self._startRecognition(); }, 500);
+      }
+    };
 
-      self._micTimeout = setTimeout(function () {
-        self._micTimeout = null;
-        if (!answered) self.stopListening();
-      }, 6000);
-    }, 120);
+    this.recognition = rec;
+    try { rec.start(); } catch (e) { this._listening = false; this.recognition = null; return; }
+
+    // Safety timeout: restart after 8 seconds of silence
+    this._micTimeout = setTimeout(function () {
+      self._micTimeout = null;
+      if (!answered && self.recognition) {
+        try { self.recognition.stop(); } catch (e) {}
+      }
+    }, 8000);
   },
 
   stopListening: function () {
-    if (this._listenTimer) { clearTimeout(this._listenTimer); this._listenTimer = null; }
+    this._answerCallback = null;
     if (this._micTimeout) { clearTimeout(this._micTimeout); this._micTimeout = null; }
     if (this.recognition) { try { this.recognition.abort(); } catch (e) {} this.recognition = null; }
     if (this._listening) { this._listening = false; if (this._onListeningChange) this._onListeningChange(false); }

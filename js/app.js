@@ -1,6 +1,6 @@
 /**
  * Junior Jarvis — Main Application Controller
- * Orchestrates game flow with push-to-talk mic, sound effects, and emoji reactions.
+ * Orchestrates game flow with always-on mic, sound effects, and emoji reactions.
  */
 var JJ = window.JJ || {};
 
@@ -32,7 +32,6 @@ JJ.app = {
       JJ.ui.setMicActive(listening);
       if (listening) {
         JJ.ui.setOrbState('listening');
-        JJ.effects.soundMicOn();
       }
     };
   },
@@ -49,19 +48,6 @@ JJ.app = {
     document.getElementById('btn-correct').addEventListener('click', function () { self.feedback(true); });
     document.getElementById('btn-incorrect').addEventListener('click', function () { self.feedback(false); });
     document.getElementById('btn-restart').addEventListener('click', function () { self.restart(); });
-
-    // Push-to-talk mic button
-    var micBtn = document.getElementById('btn-mic');
-    if (micBtn) {
-      micBtn.addEventListener('click', function () {
-        if (self.state !== 'playing') return;
-        if (JJ.speech.isListening()) {
-          JJ.speech.stopListening();
-        } else {
-          JJ.speech.listen(function (value) { self.answer(value); });
-        }
-      });
-    }
   },
 
   startGame: function () {
@@ -95,10 +81,12 @@ JJ.app = {
     JJ.ui.updateProgress(JJ.engine.getQuestionsAsked(), JJ.engine.getTotalQuestions());
     JJ.ui.setAnswerButtonsEnabled(true);
 
+    var self = this;
     JJ.ui.setOrbState('speaking');
     JJ.speech.speak(question.text, function () {
-      // No auto-listen — user taps mic button or answer buttons
-      JJ.ui.setOrbState('idle');
+      // Auto-start always-on listening after question is spoken
+      JJ.ui.setOrbState('listening');
+      JJ.speech.listen(function (value) { self.answer(value); });
     });
   },
 
