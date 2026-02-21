@@ -1,83 +1,158 @@
 /**
- * Junior Jarvis — Visual Effects
- * Floating particles background and confetti celebration.
+ * Junior Jarvis — Effects Module
+ * Particles, confetti, emoji reactions, and sound effects.
  */
 var JJ = window.JJ || {};
 
 JJ.effects = {
+  _audioCtx: null,
 
   init: function () {
     this.createParticles(25);
   },
 
-  /**
-   * Create floating particle elements in the background.
-   * Cyan/blue glowing dots that drift upward continuously.
-   */
-  createParticles: function (count) {
-    var container = document.createElement('div');
-    container.className = 'particles';
+  _ctx: function () {
+    if (!this._audioCtx) {
+      this._audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (this._audioCtx.state === 'suspended') this._audioCtx.resume();
+    return this._audioCtx;
+  },
 
+  /* ========== Particles ========== */
+
+  createParticles: function (count) {
+    var c = document.createElement('div');
+    c.className = 'particles';
     for (var i = 0; i < count; i++) {
       var p = document.createElement('div');
       p.className = 'particle';
       p.style.left = (Math.random() * 100) + '%';
       p.style.animationDuration = (6 + Math.random() * 10) + 's';
       p.style.animationDelay = (Math.random() * 10) + 's';
-
-      var size = 2 + Math.random() * 5;
-      p.style.width = size + 'px';
-      p.style.height = size + 'px';
-
-      // Mix of cyan, blue, and white particles
-      var colors = [
-        'rgba(0, 255, 255, 0.6)',
-        'rgba(0, 191, 255, 0.5)',
-        'rgba(100, 200, 255, 0.4)',
-        'rgba(255, 255, 255, 0.3)'
-      ];
+      var s = 2 + Math.random() * 5;
+      p.style.width = s + 'px'; p.style.height = s + 'px';
+      var colors = ['rgba(0,255,255,0.6)', 'rgba(0,191,255,0.5)', 'rgba(100,200,255,0.4)', 'rgba(255,255,255,0.3)'];
       p.style.background = colors[Math.floor(Math.random() * colors.length)];
-
-      container.appendChild(p);
+      c.appendChild(p);
     }
-
-    document.body.insertBefore(container, document.body.firstChild);
+    document.body.insertBefore(c, document.body.firstChild);
   },
 
-  /**
-   * Burst confetti from center of screen for celebration.
-   */
+  /* ========== Confetti ========== */
+
   confetti: function () {
-    var container = document.createElement('div');
-    container.className = 'confetti-container';
-
+    var c = document.createElement('div');
+    c.className = 'confetti-container';
     var colors = ['#00FFFF', '#FFD700', '#FF6B6B', '#00FF88', '#FF69B4', '#7B68EE', '#FFA500'];
-
-    for (var i = 0; i < 40; i++) {
-      var piece = document.createElement('div');
-      piece.className = 'confetti-piece';
-
-      var color = colors[Math.floor(Math.random() * colors.length)];
-      piece.style.background = color;
-      piece.style.left = (40 + Math.random() * 20) + '%';
-      piece.style.animationDelay = (Math.random() * 0.5) + 's';
-      piece.style.animationDuration = (1 + Math.random() * 1.5) + 's';
-
-      // Random rotation and direction
-      var angle = (Math.random() * 360);
-      var dist = 100 + Math.random() * 200;
-      piece.style.setProperty('--confetti-x', (Math.cos(angle) * dist) + 'px');
-      piece.style.setProperty('--confetti-y', (-50 - Math.random() * 300) + 'px');
-      piece.style.setProperty('--confetti-r', (Math.random() * 720 - 360) + 'deg');
-
-      container.appendChild(piece);
+    for (var i = 0; i < 50; i++) {
+      var p = document.createElement('div');
+      p.className = 'confetti-piece';
+      p.style.background = colors[Math.floor(Math.random() * colors.length)];
+      p.style.left = (30 + Math.random() * 40) + '%';
+      p.style.animationDelay = (Math.random() * 0.6) + 's';
+      p.style.animationDuration = (1 + Math.random() * 1.5) + 's';
+      var a = Math.random() * 360, d = 80 + Math.random() * 250;
+      p.style.setProperty('--confetti-x', (Math.cos(a) * d) + 'px');
+      p.style.setProperty('--confetti-y', (-60 - Math.random() * 350) + 'px');
+      p.style.setProperty('--confetti-r', (Math.random() * 720 - 360) + 'deg');
+      c.appendChild(p);
     }
+    document.body.appendChild(c);
+    setTimeout(function () { if (c.parentNode) c.parentNode.removeChild(c); }, 3500);
+  },
 
-    document.body.appendChild(container);
+  /* ========== Emoji Reactions ========== */
 
-    // Clean up after animation completes
-    setTimeout(function () {
-      if (container.parentNode) container.parentNode.removeChild(container);
-    }, 3000);
+  emojiReaction: function (emoji) {
+    var el = document.createElement('div');
+    el.className = 'emoji-reaction';
+    el.textContent = emoji;
+    el.style.left = (35 + Math.random() * 30) + '%';
+    document.body.appendChild(el);
+    setTimeout(function () { if (el.parentNode) el.parentNode.removeChild(el); }, 1500);
+  },
+
+  answerReaction: function (value) {
+    var map = { 1: '👍', 0: '👎', 0.75: '🤔', 0.25: '😕' };
+    var emoji = map[value] || '❓';
+    this.emojiReaction(emoji);
+  },
+
+  /* ========== Sound Effects (Web Audio API) ========== */
+
+  soundTap: function () {
+    try {
+      var ctx = this._ctx();
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 880;
+      o.type = 'sine';
+      g.gain.setValueAtTime(0.12, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.08);
+      o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.08);
+    } catch (e) {}
+  },
+
+  soundCorrect: function () {
+    try {
+      var ctx = this._ctx();
+      [523, 659, 784].forEach(function (f, i) {
+        var o = ctx.createOscillator();
+        var g = ctx.createGain();
+        o.connect(g); g.connect(ctx.destination);
+        o.frequency.value = f;
+        o.type = 'sine';
+        var t = ctx.currentTime + i * 0.12;
+        g.gain.setValueAtTime(0.18, t);
+        g.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
+        o.start(t); o.stop(t + 0.25);
+      });
+    } catch (e) {}
+  },
+
+  soundWrong: function () {
+    try {
+      var ctx = this._ctx();
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.setValueAtTime(350, ctx.currentTime);
+      o.frequency.linearRampToValueAtTime(220, ctx.currentTime + 0.25);
+      o.type = 'sine';
+      g.gain.setValueAtTime(0.12, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.25);
+      o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.25);
+    } catch (e) {}
+  },
+
+  soundReveal: function () {
+    try {
+      var ctx = this._ctx();
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.setValueAtTime(300, ctx.currentTime);
+      o.frequency.exponentialRampToValueAtTime(600, ctx.currentTime + 0.3);
+      o.type = 'triangle';
+      g.gain.setValueAtTime(0.15, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+      o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.4);
+    } catch (e) {}
+  },
+
+  soundMicOn: function () {
+    try {
+      var ctx = this._ctx();
+      var o = ctx.createOscillator();
+      var g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.frequency.value = 660;
+      o.type = 'sine';
+      g.gain.setValueAtTime(0.1, ctx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+      o.start(ctx.currentTime); o.stop(ctx.currentTime + 0.12);
+    } catch (e) {}
   }
 };

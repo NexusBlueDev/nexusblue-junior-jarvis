@@ -1,10 +1,6 @@
 /**
  * Junior Jarvis — Main Application Controller
- * Orchestrates game flow: welcome → questions → guess → result.
- *
- * AI-First Design: When JJ.aiConfig.enabled is true, the question
- * phase routes through an AI provider for dynamic conversation.
- * The static engine serves as the always-available offline fallback.
+ * Orchestrates game flow with push-to-talk mic, sound effects, and emoji reactions.
  */
 var JJ = window.JJ || {};
 
@@ -20,9 +16,8 @@ JJ.app = {
     JJ.ui.setOrbState('idle');
 
     this.bindEvents();
-    this.bindSpeechIndicator();
+    this.bindMicIndicator();
 
-    // Speak welcome after voices have time to load
     var self = this;
     setTimeout(function () {
       JJ.ui.setOrbState('speaking');
@@ -32,14 +27,12 @@ JJ.app = {
     }, 600);
   },
 
-  /**
-   * Wire up speech mic state to orb + mic badge visuals.
-   */
-  bindSpeechIndicator: function () {
+  bindMicIndicator: function () {
     JJ.speech._onListeningChange = function (listening) {
       JJ.ui.setMicActive(listening);
       if (listening) {
         JJ.ui.setOrbState('listening');
+        JJ.effects.soundMicOn();
       }
     };
   },
@@ -56,17 +49,30 @@ JJ.app = {
     document.getElementById('btn-correct').addEventListener('click', function () { self.feedback(true); });
     document.getElementById('btn-incorrect').addEventListener('click', function () { self.feedback(false); });
     document.getElementById('btn-restart').addEventListener('click', function () { self.restart(); });
+
+    // Push-to-talk mic button
+    var micBtn = document.getElementById('btn-mic');
+    if (micBtn) {
+      micBtn.addEventListener('click', function () {
+        if (self.state !== 'playing') return;
+        if (JJ.speech.isListening()) {
+          JJ.speech.stopListening();
+        } else {
+          JJ.speech.listen(function (value) { self.answer(value); });
+        }
+      });
+    }
   },
 
   startGame: function () {
     if (this.state === 'playing') return;
-
     this.state = 'playing';
     JJ.engine.reset();
     JJ.metrics.recordGameStart();
     JJ.ui.updateMetrics(JJ.metrics.getPlayCount());
     JJ.ui.showScreen('game');
     JJ.ui.updateProgress(0, JJ.engine.getTotalQuestions());
+    JJ.effects.soundTap();
 
     var self = this;
     JJ.ui.setOrbState('speaking');
@@ -79,16 +85,9 @@ JJ.app = {
   askQuestion: function () {
     if (this.state !== 'playing') return;
 
-    if (JJ.engine.shouldGuess()) {
-      this.makeGuess();
-      return;
-    }
-
+    if (JJ.engine.shouldGuess()) { this.makeGuess(); return; }
     var qIdx = JJ.engine.selectQuestion();
-    if (qIdx < 0) {
-      this.makeGuess();
-      return;
-    }
+    if (qIdx < 0) { this.makeGuess(); return; }
 
     var question = JJ.questions[qIdx];
     JJ.ui.setQuestion(question.text);
@@ -96,26 +95,24 @@ JJ.app = {
     JJ.ui.updateProgress(JJ.engine.getQuestionsAsked(), JJ.engine.getTotalQuestions());
     JJ.ui.setAnswerButtonsEnabled(true);
 
-    var self = this;
     JJ.ui.setOrbState('speaking');
     JJ.speech.speak(question.text, function () {
-      // Orb transitions to listening state via _onListeningChange callback
-      JJ.speech.listen(function (value) { self.answer(value); });
+      // No auto-listen — user taps mic button or answer buttons
+      JJ.ui.setOrbState('idle');
     });
   },
 
   answer: function (value) {
     if (this.state !== 'playing') return;
-
     JJ.ui.setAnswerButtonsEnabled(false);
     JJ.speech.stopListening();
+    JJ.effects.soundTap();
+    JJ.effects.answerReaction(value);
     JJ.ui.setOrbState('thinking');
     JJ.engine.processAnswer(value);
 
     var self = this;
-    setTimeout(function () {
-      self.askQuestion();
-    }, 350);
+    setTimeout(function () { self.askQuestion(); }, 500);
   },
 
   makeGuess: function () {
@@ -123,36 +120,29 @@ JJ.app = {
     JJ.speech.stopListening();
     var character = JJ.engine.getGuess();
 
+    JJ.effects.soundReveal();
     JJ.ui.showScreen('guess');
     JJ.ui.showGuess(character);
 
     JJ.ui.setOrbState('speaking');
-    var guessText = JJ.messages.guessPrefix + character.name + '. ' + character.fact;
-    JJ.speech.speak(guessText, function () {
-      JJ.ui.setOrbState('idle');
-    });
+    var text = JJ.messages.guessPrefix + character.name + '. ' + character.fact;
+    JJ.speech.speak(text, function () { JJ.ui.setOrbState('idle'); });
   },
 
   feedback: function (correct) {
     this.state = 'result';
     JJ.metrics.recordGameEnd(correct);
-
+    JJ.effects.soundTap();
     JJ.ui.showScreen('result');
     JJ.ui.showResult(correct);
-
-    if (correct) {
-      JJ.ui.setOrbState('celebrating');
-    } else {
-      JJ.ui.setOrbState('idle');
-    }
-
-    var msg = correct ? JJ.messages.correct : JJ.messages.incorrect;
-    JJ.speech.speak(msg);
+    JJ.ui.setOrbState(correct ? 'celebrating' : 'idle');
+    JJ.speech.speak(correct ? JJ.messages.correct : JJ.messages.incorrect);
   },
 
   restart: function () {
     this.state = 'welcome';
     JJ.speech.cancelSpeech();
+    JJ.effects.soundTap();
     JJ.ui.showScreen('welcome');
     JJ.ui.updateProgress(0, JJ.engine.getTotalQuestions());
     JJ.ui.updateMetrics(JJ.metrics.getPlayCount());
@@ -160,21 +150,12 @@ JJ.app = {
 
     setTimeout(function () {
       JJ.ui.setOrbState('speaking');
-      JJ.speech.speak(JJ.messages.welcome, function () {
-        JJ.ui.setOrbState('idle');
-      });
+      JJ.speech.speak(JJ.messages.welcome, function () { JJ.ui.setOrbState('idle'); });
     }, 300);
   }
 };
 
-// Boot
-document.addEventListener('DOMContentLoaded', function () {
-  JJ.app.init();
-});
-
-// Register Service Worker for offline PWA support
+document.addEventListener('DOMContentLoaded', function () { JJ.app.init(); });
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', function () {
-    navigator.serviceWorker.register('sw.js').catch(function () {});
-  });
+  window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
 }

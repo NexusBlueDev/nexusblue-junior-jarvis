@@ -4,21 +4,19 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Junior Jarvis — AI Future Guesser</title>
-
-  <!-- PWA -->
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#001F3F">
+  <meta name="theme-color" content="#000B1E">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="description" content="Voice-driven AI guessing game — think of a future AI job and Junior Jarvis will guess it!">
-
+  <meta name="description" content="Voice-driven AI guessing game for kids!">
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
 
   <!-- ========== Welcome Screen ========== -->
   <div id="screen-welcome" class="screen">
-    <h1 class="title">Junior Jarvis</h1>
+    <h1 class="title gradient-text">Junior Jarvis</h1>
+    <p class="tagline">Your AI Buddy That Reads Minds!</p>
     <div class="orb-wrapper" id="orb-welcome">
       <div class="orb-glow"></div>
       <div class="orb-ring"></div>
@@ -27,44 +25,43 @@
       <div class="orb-pulse-ring"></div>
       <div class="orb-pulse-ring orb-pulse-ring-2"></div>
     </div>
-    <div class="how-to-play">
+
+    <div class="glass-card how-to-play">
       <h2 class="how-to-play-title">How to Play</h2>
       <div class="steps">
-        <div class="step">
-          <span class="step-number">1</span>
-          <span class="step-text">Think of a cool AI job or superpower</span>
-        </div>
-        <div class="step">
-          <span class="step-number">2</span>
-          <span class="step-text">Answer my yes-or-no questions</span>
-        </div>
-        <div class="step">
-          <span class="step-number">3</span>
-          <span class="step-text">See if I can guess what you picked!</span>
-        </div>
+        <div class="step"><span class="step-icon">🧠</span><span class="step-text">Pick one of these AI superpowers in your head</span></div>
+        <div class="step"><span class="step-icon">💬</span><span class="step-text">Answer my yes-or-no questions</span></div>
+        <div class="step"><span class="step-icon">✨</span><span class="step-text">See if I can guess what you picked!</span></div>
       </div>
-      <p class="how-to-play-hint">You can say your answers out loud or tap the buttons!</p>
     </div>
-    <button id="btn-start" class="btn btn-start">Let's Play!</button>
+
+    <div id="character-gallery" class="character-gallery"></div>
+
+    <button id="btn-start" class="btn btn-start btn-glow">Let's Play!</button>
   </div>
 
   <!-- ========== Question Screen ========== -->
   <div id="screen-game" class="screen hidden">
-    <div class="orb-wrapper orb-wrapper-small" id="orb-game">
-      <div class="orb-glow"></div>
-      <div class="orb-ring"></div>
-      <div class="orb-ring orb-ring-2"></div>
-      <div class="orb-core"></div>
-      <div class="orb-pulse-ring"></div>
-      <div class="orb-pulse-ring orb-pulse-ring-2"></div>
+    <div class="game-header">
+      <div class="orb-wrapper orb-wrapper-small" id="orb-game">
+        <div class="orb-glow"></div>
+        <div class="orb-ring"></div>
+        <div class="orb-ring orb-ring-2"></div>
+        <div class="orb-core"></div>
+        <div class="orb-pulse-ring"></div>
+        <div class="orb-pulse-ring orb-pulse-ring-2"></div>
+      </div>
+      <div class="game-header-info">
+        <span id="question-counter" class="question-counter"></span>
+        <div id="progress-dots" class="progress-dots"></div>
+      </div>
     </div>
-    <div id="mic-badge" class="mic-badge">🎤 I'm listening...</div>
-    <div class="progress">
-      <div id="progress-bar" class="progress-bar"></div>
+
+    <div class="glass-card question-card">
+      <p id="question-text" class="question"></p>
+      <p id="question-hint" class="question-hint"></p>
     </div>
-    <p id="question-text" class="question"></p>
-    <p id="question-hint" class="question-hint"></p>
-    <p class="input-hint">Say your answer or tap a button!</p>
+
     <div class="answer-buttons">
       <button id="btn-yes" class="btn btn-yes">Yes!</button>
       <button id="btn-no" class="btn btn-no">No!</button>
@@ -72,19 +69,26 @@
       <button id="btn-probably-not" class="btn btn-probnot">Not Really</button>
       <button id="btn-uncertain" class="btn btn-uncertain">Not Sure</button>
     </div>
+
+    <p class="input-hint">Tap an answer — or use the mic to speak!</p>
+
+    <button id="btn-mic" class="mic-btn" aria-label="Tap to speak">
+      <span class="mic-btn-icon">🎤</span>
+      <span class="mic-btn-label">Tap to Talk</span>
+    </button>
   </div>
 
   <!-- ========== Guess Screen ========== -->
   <div id="screen-guess" class="screen hidden">
     <p class="guess-intro">I think I know what you picked...</p>
-    <div id="guess-card" class="character-card">
+    <div id="guess-card" class="character-card glass-card">
       <div id="guess-emoji" class="character-emoji"></div>
       <h2 id="guess-name" class="character-name"></h2>
       <p id="guess-fact" class="character-fact"></p>
     </div>
     <p class="guess-ask">Did I get it right?</p>
     <div class="guess-buttons">
-      <button id="btn-correct" class="btn btn-yes">Yes! 🎉</button>
+      <button id="btn-correct" class="btn btn-yes btn-glow">Yes! 🎉</button>
       <button id="btn-incorrect" class="btn btn-no">Nope!</button>
     </div>
   </div>
@@ -94,13 +98,13 @@
     <div id="result-icon" class="result-icon"></div>
     <h2 id="result-message" class="result-message"></h2>
     <p id="result-detail" class="result-detail"></p>
-    <button id="btn-restart" class="btn btn-start">Play Again!</button>
+    <button id="btn-restart" class="btn btn-start btn-glow">Play Again!</button>
   </div>
 
-  <!-- ========== Metrics ========== -->
+  <!-- Metrics -->
   <div class="metrics">Games: <span id="play-count">0</span></div>
 
-  <!-- ========== Scripts (order matters) ========== -->
+  <!-- Scripts -->
   <script src="js/data.js"></script>
   <script src="js/engine.js"></script>
   <script src="js/speech.js"></script>
