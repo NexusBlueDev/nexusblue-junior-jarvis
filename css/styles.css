@@ -311,18 +311,22 @@ body {
 @keyframes tapBounce { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 @keyframes overlayPulse { 0%,100% { background: rgba(0,0,0,0.7); } 50% { background: rgba(0,0,0,0.6); } }
 
-/* ========== Restart Link ========== */
+/* ========== Start Over Button ========== */
 .btn-restart-small {
   margin-top: 18px;
-  background: none;
-  border: none;
-  color: rgba(255,255,255,0.45);
-  font-size: 0.85em;
+  padding: 12px 28px;
+  font-size: 1.1em;
+  font-weight: 700;
+  border: 2px solid rgba(255,255,255,0.35);
+  border-radius: 50px;
+  background: rgba(255,255,255,0.1);
+  color: rgba(255,255,255,0.85);
   cursor: pointer;
-  text-decoration: underline;
-  padding: 6px 12px;
+  transition: transform 0.12s, background 0.2s;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
-.btn-restart-small:active { color: rgba(255,255,255,0.7); }
+.btn-restart-small:active { transform: scale(0.92); background: rgba(255,255,255,0.2); }
 
 /* ========== Character Preview Overlay ========== */
 .character-preview-overlay {
