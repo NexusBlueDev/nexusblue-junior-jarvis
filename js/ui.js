@@ -86,11 +86,13 @@ JJ.ui = {
     overlay.appendChild(card);
     document.body.appendChild(overlay);
 
-    var dismiss = function () { overlay.remove(); };
+    var dismiss = function () { JJ.speech.cancelSpeech(); overlay.remove(); };
     close.addEventListener('click', dismiss);
     overlay.addEventListener('click', function (e) {
       if (e.target === overlay) dismiss();
     });
+
+    JJ.speech.speak(character.name + '. ' + character.fact);
   },
 
   /**
