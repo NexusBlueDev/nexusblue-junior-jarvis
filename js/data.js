@@ -107,9 +107,9 @@ JJ.questions = [
 
 JJ.messages = {
   welcome:       'Hi! I\'m Junior Jarvis! ' +
-                 'Tap any card below to learn about the AI jobs. ' +
-                 'Then pick one in your head and I\'ll try to guess it! ' +
-                 'Just tap the buttons to answer. Ready?',
+                 'Pick one of these cool AI jobs in your head. ' +
+                 'Tap a card if you want to learn more! ' +
+                 'I\'ll ask you some questions and try to guess which one you picked. Ready?',
   start:         'OK, here we go! Here\'s my first question!',
   guessPrefix:   'I think I know! Is it... ',
   correct:       'Yay! I got it! High five!',
