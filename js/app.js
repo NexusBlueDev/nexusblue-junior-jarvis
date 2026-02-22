@@ -48,6 +48,10 @@ JJ.app = {
     document.getElementById('btn-correct').addEventListener('click', function () { self.feedback(true); });
     document.getElementById('btn-incorrect').addEventListener('click', function () { self.feedback(false); });
     document.getElementById('btn-restart').addEventListener('click', function () { self.restart(); });
+    var restartLinks = document.querySelectorAll('.btn-restart-link');
+    for (var i = 0; i < restartLinks.length; i++) {
+      restartLinks[i].addEventListener('click', function () { self.restart(); });
+    }
   },
 
   startGame: function () {

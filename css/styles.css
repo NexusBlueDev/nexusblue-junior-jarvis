@@ -311,6 +311,19 @@ body {
 @keyframes tapBounce { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
 @keyframes overlayPulse { 0%,100% { background: rgba(0,0,0,0.7); } 50% { background: rgba(0,0,0,0.6); } }
 
+/* ========== Restart Link ========== */
+.btn-restart-small {
+  margin-top: 18px;
+  background: none;
+  border: none;
+  color: rgba(255,255,255,0.45);
+  font-size: 0.85em;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 6px 12px;
+}
+.btn-restart-small:active { color: rgba(255,255,255,0.7); }
+
 /* ========== Character Preview Overlay ========== */
 .character-preview-overlay {
   position: fixed; inset: 0; z-index: 200;
