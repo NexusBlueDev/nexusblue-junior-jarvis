@@ -6,112 +6,113 @@
  * When an AI provider is configured, the engine can dynamically generate
  * questions and evaluate answers using natural language understanding.
  *
- * v4 — Forward-thinking AI roles: strategy, manufacturing, creation, exploration.
- * Each character has a unique property combination (min 2 diffs between any pair).
+ * v6 — 3rd-grade hardened. Concrete questions, keyword-matched facts.
+ * Each fact uses the EXACT trigger words from the questions so kids
+ * who read the card know how to answer. Names telegraph top properties.
  *
- * Property matrix:
+ * Property matrix (min 2 diffs between any pair):
  *   strategy create robots nature art people physical explore
- * 1    T       F      F      F     F     T      F       F     AI Strategist
- * 2    F       T      T      F     F     F      T       F     Smart Factory Creator
- * 3    F       T      F      F     T     F      F       F     AI Artist
- * 4    T       F      T      T     F     F      F       T     Space Pioneer
- * 5    F       T      T      F     F     T      F       F     Bio-Tech Healer
- * 6    T       F      F      T     F     T      F       T     Planet Guardian
- * 7    F       T      T      F     T     F      F       T     Virtual World Builder
- * 8    T       T      T      F     F     F      T       T     Quantum Inventor
+ * 1    T       F      F      F     F     T      F       F     The AI Planner
+ * 2    F       T      T      F     F     F      T       F     The Robot Maker
+ * 3    F       T      F      F     T     F      F       F     The AI Artist
+ * 4    T       F      T      T     F     F      F       T     The Space Explorer
+ * 5    F       T      T      F     F     T      F       F     The Robot Doctor
+ * 6    T       F      F      T     F     T      F       T     The Earth Saver
+ * 7    F       T      T      F     T     F      F       T     The World Builder
+ * 8    T       T      T      F     F     F      T       T     The Super Inventor
  */
 var JJ = window.JJ || {};
 
 JJ.characters = [
   {
     id: 'ai-strategist',
-    name: 'AI Strategist',
+    name: 'The AI Planner',
     emoji: '🧠',
-    fact: 'AI Strategists are the masterminds who figure out how AI can change the world! They make big plans, solve impossible puzzles, and help everyone use AI wisely.',
+    fact: 'AI Planners make plans to help people do things better! They use AI to solve big problems for everyone.',
     gradient: ['#7C4DFF', '#311B92'],
     props: { strategy: true, create: false, robots: false, nature: false, art: false, people: true, physical: false, explore: false }
   },
   {
     id: 'smart-factory-creator',
-    name: 'Smart Factory Creator',
+    name: 'The Robot Maker',
     emoji: '🏭',
-    fact: 'Smart Factory Creators build the factories of the future! Imagine a place where robots, 3D printers, and AI work together to build anything — from flying cars to space stations.',
+    fact: 'Robot Makers build new robots and gadgets you can hold! They make real machines like robot arms and drones.',
     gradient: ['#546E7A', '#263238'],
     props: { strategy: false, create: true, robots: true, nature: false, art: false, people: false, physical: true, explore: false }
   },
   {
     id: 'ai-artist',
-    name: 'AI Artist',
+    name: 'The AI Artist',
     emoji: '🎨',
-    fact: 'AI Artists create mind-blowing art, music, and movies that nobody has ever seen! They team up with AI to imagine and create things beyond anyone\'s wildest dreams.',
+    fact: 'AI Artists build new art, music, and movies with AI! They dream up things nobody has ever seen before.',
     gradient: ['#EF5350', '#F9A825'],
     props: { strategy: false, create: true, robots: false, nature: false, art: true, people: false, physical: false, explore: false }
   },
   {
     id: 'space-pioneer',
-    name: 'Space Pioneer',
+    name: 'The Space Explorer',
     emoji: '🚀',
-    fact: 'Space Pioneers use AI robots to explore the universe! They send smart rovers to Mars, plan missions to distant stars, and dream up humanity\'s future among the galaxies.',
+    fact: 'Space Explorers make plans and send robots to outer space! They explore new places like Mars and the stars.',
     gradient: ['#AB47BC', '#4A148C'],
     props: { strategy: true, create: false, robots: true, nature: true, art: false, people: false, physical: false, explore: true }
   },
   {
     id: 'biotech-healer',
-    name: 'Bio-Tech Healer',
+    name: 'The Robot Doctor',
     emoji: '🧬',
-    fact: 'Bio-Tech Healers use tiny AI-powered nano-robots to cure diseases! Imagine robots smaller than a cell fixing your body from the inside — that\'s the future of medicine!',
+    fact: 'Robot Doctors build new tiny robots that help people feel better! It\'s like magic medicine from the future.',
     gradient: ['#42A5F5', '#1565C0'],
     props: { strategy: false, create: true, robots: true, nature: false, art: false, people: true, physical: false, explore: false }
   },
   {
     id: 'planet-guardian',
-    name: 'Planet Guardian',
+    name: 'The Earth Saver',
     emoji: '🌍',
-    fact: 'Planet Guardians protect Earth using AI! They track endangered animals with smart drones, clean up oceans with robot ships, and plan clever strategies to fight climate change.',
+    fact: 'Earth Savers make plans to help people and protect our planet! They explore new places like forests and oceans.',
     gradient: ['#26A69A', '#00695C'],
     props: { strategy: true, create: false, robots: false, nature: true, art: false, people: true, physical: false, explore: true }
   },
   {
     id: 'virtual-world-builder',
-    name: 'Virtual World Builder',
+    name: 'The World Builder',
     emoji: '🌌',
-    fact: 'Virtual World Builders create entire digital universes you can step into! Using VR headsets and AI, they design worlds so real you can\'t tell the difference — and you explore them with friends.',
+    fact: 'World Builders use robots and art to build new places you can explore! Put on goggles and jump into a new world.',
     gradient: ['#5C6BC0', '#1A237E'],
     props: { strategy: false, create: true, robots: true, nature: false, art: true, people: false, physical: false, explore: true }
   },
   {
     id: 'quantum-inventor',
-    name: 'Quantum Inventor',
+    name: 'The Super Inventor',
     emoji: '⚡',
-    fact: 'Quantum Inventors build tomorrow\'s technology today! Quantum computers, teleportation devices, and gadgets straight out of science fiction — they turn the impossible into reality.',
+    fact: 'Super Inventors make plans and build new robots and gadgets you can hold! They explore new places to test what they make.',
     gradient: ['#FFA726', '#E65100'],
     props: { strategy: true, create: true, robots: true, nature: false, art: false, people: false, physical: true, explore: true }
   }
 ];
 
 JJ.questions = [
-  { id: 'strategy', text: 'Does your AI superpower involve making big plans and strategies?',    hint: 'Like planning how to change the world!',            prop: 'strategy' },
-  { id: 'create',   text: 'Does it involve building or creating brand new things?',              hint: 'Making or inventing something totally new!',         prop: 'create' },
-  { id: 'robots',   text: 'Does it involve working with robots?',                                hint: 'Robots helping do cool and amazing tasks!',          prop: 'robots' },
-  { id: 'nature',   text: 'Is it connected to nature, the planet, or outer space?',              hint: 'The Earth, animals, oceans, or the stars!',          prop: 'nature' },
-  { id: 'art',      text: 'Does it involve art, design, or being super creative?',               hint: 'Drawing, designing, or making beautiful things!',    prop: 'art' },
-  { id: 'people',   text: 'Does it directly help or take care of people?',                       hint: 'Making sure people are healthy, happy, or safe!',    prop: 'people' },
-  { id: 'physical', text: 'Does it make real physical things you can touch?',                     hint: 'Things you can actually hold in your hands!',        prop: 'physical' },
-  { id: 'explore',  text: 'Is it about exploring or discovering new places?',                     hint: 'Going on adventures and discovering the unknown!',   prop: 'explore' }
+  { id: 'strategy', text: 'Does it make plans?',                              hint: 'Like planning what to do!',                   prop: 'strategy' },
+  { id: 'create',   text: 'Does it build new things?',                        hint: 'Like making something brand new!',             prop: 'create' },
+  { id: 'robots',   text: 'Does it use robots?',                              hint: 'Robots that help with the work!',              prop: 'robots' },
+  { id: 'nature',   text: 'Does it help the Earth or go to outer space?',     hint: 'The planet, animals, or the stars!',           prop: 'nature' },
+  { id: 'art',      text: 'Does it make art, music, or movies?',              hint: 'Like painting, drawing, or songs!',            prop: 'art' },
+  { id: 'people',   text: 'Does it help people?',                             hint: 'Like keeping people safe or healthy!',          prop: 'people' },
+  { id: 'physical', text: 'Does it make gadgets you can hold in your hands?',  hint: 'Real stuff like machines or tools!',           prop: 'physical' },
+  { id: 'explore',  text: 'Does it explore new places?',                      hint: 'Like going somewhere far away!',                prop: 'explore' }
 ];
 
 JJ.messages = {
-  welcome:       'Hey there, future superstar! I\'m Junior Jarvis, your friendly AI buddy! ' +
-                 'Pick one of these amazing AI superpowers in your head. ' +
-                 'I\'ll ask you some yes or no questions, and try to guess what you\'re thinking! ' +
-                 'Just tap the buttons to answer. Ready? Let\'s go!',
-  start:         'Awesome! Let me put on my thinking cap. Here comes my first question!',
+  welcome:       'Hi! I\'m Junior Jarvis! ' +
+                 'Pick one of these cool AI jobs in your head. ' +
+                 'I\'ll ask you some questions and try to guess which one you picked! ' +
+                 'Just tap the buttons to answer. Ready?',
+  start:         'OK, here we go! Here\'s my first question!',
   guessPrefix:   'I think I know! Is it... ',
-  correct:       'I knew it! High five — you\'re a natural AI thinker!',
-  correctDetail: 'That was so much fun! Ask your parents about NexusBlue\'s awesome AI courses — you could learn to build cool stuff like this!',
-  incorrect:     'Aw, I didn\'t get it this time! But that\'s okay — even the best AI learns from its mistakes!',
-  encourageRetry:'Want to play again? I bet I\'ll figure it out next round!',
-  thinking:      'Hmm, let me think about that...'
+  correct:       'Yay! I got it! High five!',
+  correctDetail: 'That was fun! Ask your mom or dad about NexusBlue — you can learn more cool AI stuff!',
+  incorrect:     'Oops! I didn\'t get it. But that\'s OK — even AI makes mistakes!',
+  encourageRetry:'Want to play again? I bet I can get it next time!',
+  thinking:      'Hmm, let me think...'
 };
 
 /**
@@ -125,5 +126,5 @@ JJ.aiConfig = {
   endpoint: null,
   apiKey: null,
   model: null,
-  systemPrompt: 'You are Junior Jarvis, a friendly AI buddy helping children aged 6-12 guess AI-related future jobs. Ask yes/no questions to narrow down which role they are thinking of. Be warm, encouraging, and fun. Use simple words. Keep responses under 2 sentences.'
+  systemPrompt: 'You are Junior Jarvis, a friendly AI buddy helping kids guess AI jobs at a NexusBlue booth. Ask yes/no questions to figure out which one they picked. Be nice and fun. Use easy words a 3rd grader would know. Keep answers to 1-2 short sentences. The jobs are all about how AI helps people, businesses, and the world.'
 };
