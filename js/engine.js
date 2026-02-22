@@ -85,14 +85,17 @@ JJ.engine = {
   shouldGuess: function () {
     if (this.asked.size >= JJ.questions.length) return true;
 
+    // Let the conversation breathe — at least 5 questions before any guess
+    if (this.asked.size < 5) return false;
+
     var sorted = this.getSortedCharacters();
     var topScore = sorted[0].score;
     var secondScore = sorted.length > 1 ? sorted[1].score : -Infinity;
     var lead = topScore - secondScore;
 
-    // Guess when: clear leader after 3+ questions, or dominant lead anytime
+    // Guess when: clear leader after 5+ questions
     if (lead >= 4) return true;
-    if (this.asked.size >= 3 && lead >= 3) return true;
+    if (this.asked.size >= 6 && lead >= 3) return true;
 
     return false;
   },

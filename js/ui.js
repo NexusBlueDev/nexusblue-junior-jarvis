@@ -31,17 +31,65 @@ JJ.ui = {
 
   /**
    * Build the character preview gallery on the welcome screen.
+   * Tap a card to see its fact in a modal overlay.
    */
   buildCharacterGallery: function () {
     var container = document.getElementById('character-gallery');
     if (!container) return;
+    var self = this;
     JJ.characters.forEach(function (c) {
       var item = document.createElement('div');
       item.className = 'gallery-item';
       item.style.background = 'linear-gradient(135deg, ' + c.gradient[0] + ', ' + c.gradient[1] + ')';
       item.innerHTML = '<span class="gallery-emoji">' + c.emoji + '</span>' +
                        '<span class="gallery-name">' + c.name + '</span>';
+      item.addEventListener('click', function () { self.showCharacterPreview(c); });
       container.appendChild(item);
+    });
+  },
+
+  /**
+   * Show a modal overlay with character details.
+   */
+  showCharacterPreview: function (character) {
+    var existing = document.getElementById('character-preview-overlay');
+    if (existing) existing.remove();
+
+    var overlay = document.createElement('div');
+    overlay.id = 'character-preview-overlay';
+    overlay.className = 'character-preview-overlay';
+
+    var card = document.createElement('div');
+    card.className = 'character-card glass-card';
+    card.style.background = 'linear-gradient(135deg, ' + character.gradient[0] + ', ' + character.gradient[1] + ')';
+
+    var emoji = document.createElement('div');
+    emoji.className = 'character-emoji';
+    emoji.textContent = character.emoji;
+
+    var name = document.createElement('h2');
+    name.className = 'character-name';
+    name.textContent = character.name;
+
+    var fact = document.createElement('p');
+    fact.className = 'character-fact';
+    fact.textContent = character.fact;
+
+    var close = document.createElement('button');
+    close.className = 'btn preview-close';
+    close.textContent = 'Got it!';
+
+    card.appendChild(emoji);
+    card.appendChild(name);
+    card.appendChild(fact);
+    card.appendChild(close);
+    overlay.appendChild(card);
+    document.body.appendChild(overlay);
+
+    var dismiss = function () { overlay.remove(); };
+    close.addEventListener('click', dismiss);
+    overlay.addEventListener('click', function (e) {
+      if (e.target === overlay) dismiss();
     });
   },
 
@@ -51,7 +99,7 @@ JJ.ui = {
   buildProgressDots: function () {
     var container = document.getElementById('progress-dots');
     if (!container) return;
-    for (var i = 0; i < 8; i++) {
+    for (var i = 0; i < JJ.questions.length; i++) {
       var dot = document.createElement('div');
       dot.className = 'progress-dot';
       container.appendChild(dot);
