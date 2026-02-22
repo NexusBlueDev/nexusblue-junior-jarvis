@@ -1,12 +1,20 @@
 # HANDOFF — Junior Jarvis
 
 ## Last Updated
-2026-02-21 — v3: Major interactive/visual overhaul — push-to-talk mic, sound effects, emoji reactions, TikTok/Instagram-inspired UI.
+2026-02-22 — Governance: CLAUDE.md converted to project-specific v3.0 format. Global Claude standards now centralized.
 
 ## Project State
 Junior Jarvis v3 is built and ready for testing. The game features a modern glassmorphism UI with push-to-talk mic, Web Audio sound effects, floating emoji reactions, character gallery, and Instagram-style progress dots. The mic auto-listen issue has been replaced with an explicit push-to-talk button.
 
 ## Completed
+
+### 2026-02-22 — Claude Governance
+- **CLAUDE.md converted to project-specific v3.0 format** — Removed embedded global copilot prompt; project-specific rules only
+- **Global Claude standards centralized** — `~/.claude/CLAUDE.md` (v3.0 master) applies to all NexusBlue projects automatically
+- **Master template stored** at `NexusBlueDev/nexusblue-application-templates/claude/CLAUDE.md` (source of truth)
+- **HANDOFF.md is now the governing document** — Claude reads this first each session to understand project state
+
+### v1–v3 (Product)
 - Project scaffolding and architecture design
 - Game engine with scoring-based elimination (8 characters, 8 questions)
 - Web Speech API integration (TTS friendly British male voice + STT push-to-talk)
@@ -58,4 +66,4 @@ Junior Jarvis v3 is built and ready for testing. The game features a modern glas
 > Project: Junior Jarvis — AI Future Guesser
 > State: v3 complete, ready for QA and branding
 > Next action: Test all 8 character paths with push-to-talk mic, then insert NexusBlue branding
-> Start by reading: ARCHITECTURE.md for system overview, then CLAUDE.md for project conventions
+> Start by reading: This HANDOFF.md first, then CLAUDE.md for project-specific execution rules (global rules auto-loaded from ~/.claude/CLAUDE.md)
