@@ -42,7 +42,8 @@ JJ.ui = {
       item.className = 'gallery-item';
       item.style.background = 'linear-gradient(135deg, ' + c.gradient[0] + ', ' + c.gradient[1] + ')';
       item.innerHTML = '<span class="gallery-emoji">' + c.emoji + '</span>' +
-                       '<span class="gallery-name">' + c.name + '</span>';
+                       '<span class="gallery-name">' + c.name + '</span>' +
+                       '<span class="gallery-click">(click me)</span>';
       item.addEventListener('click', function () { self.showCharacterPreview(c); });
       container.appendChild(item);
     });

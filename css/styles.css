@@ -197,6 +197,7 @@ body {
 .gallery-item:hover { box-shadow: 0 0 16px rgba(70,179,230,0.2); }
 .gallery-emoji { font-size: 2em; }
 .gallery-name { font-size: 0.7em; color: rgba(255,255,255,0.9); white-space: nowrap; font-weight: 600; }
+.gallery-click { font-size: 0.55em; color: rgba(255,255,255,0.5); font-style: italic; }
 
 /* ========== How to Play ========== */
 .how-to-play { padding: 6px 14px; max-width: 420px; width: 100%; }
