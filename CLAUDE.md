@@ -5,6 +5,10 @@
 
 ---
 
+## Project Type
+**Type:** Static PWA — GitHub Pages
+No Supabase. No auth. No seed accounts. HTML5 + Vanilla JS (ES5), GitHub Pages hosted.
+
 ## Project Identity
 
 ```
