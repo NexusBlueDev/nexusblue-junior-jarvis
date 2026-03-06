@@ -30,6 +30,7 @@ Junior Jarvis v3 is built and ready for testing. The game features a modern glas
 - **v3:** Instagram-style segmented progress dots + question counter
 - **v3:** Confetti celebration on correct guess
 - **2026-03-06:** Switched to darker neon color palette with bursts of light (magenta/green/cyan theme) per user request
+- **2026-03-06:** Major visual overhaul — Cyberpunk Arcade theme: deep indigo base, electric amber/hot pink/ice blue palette, angular clip-path buttons and cards, hex-grid gallery tiles, scanline CRT overlay, glitch text animations, holographic progress bar with shine sweep, all typography uppercased with letter-spacing
 - Responsive layout for tablets and phones
 - PWA manifest + Service Worker for offline capability
 - SVG app icons

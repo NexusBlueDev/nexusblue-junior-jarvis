@@ -32,7 +32,7 @@ JJ.effects = {
       p.style.animationDelay = (Math.random() * 10) + 's';
       var s = 2 + Math.random() * 5;
       p.style.width = s + 'px'; p.style.height = s + 'px';
-      var colors = ['rgba(0,255,255,0.6)', 'rgba(57,255,20,0.6)', 'rgba(255,0,255,0.6)', 'rgba(255,255,255,0.3)'];
+      var colors = ['rgba(255,180,50,0.5)', 'rgba(255,60,142,0.4)', 'rgba(0,212,255,0.4)', 'rgba(224,214,255,0.2)'];
       p.style.background = colors[Math.floor(Math.random() * colors.length)];
       c.appendChild(p);
     }
@@ -44,7 +44,7 @@ JJ.effects = {
   confetti: function () {
     var c = document.createElement('div');
     c.className = 'confetti-container';
-    var colors = ['#ff00ff', '#39ff14', '#00ffff', '#ffcc00', '#ff69b4', '#7b68ee'];
+    var colors = ['#ffb432', '#ff3c8e', '#00d4ff', '#7c4dff', '#ffe082', '#ff6090'];
     for (var i = 0; i < 50; i++) {
       var p = document.createElement('div');
       p.className = 'confetti-piece';
