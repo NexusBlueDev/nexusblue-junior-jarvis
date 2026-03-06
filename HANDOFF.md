@@ -29,6 +29,7 @@ Junior Jarvis v3 is built and ready for testing. The game features a modern glas
 - **v3:** Glassmorphism UI (frosted glass cards, gradient text, modern animations)
 - **v3:** Instagram-style segmented progress dots + question counter
 - **v3:** Confetti celebration on correct guess
+- **2026-03-06:** Switched to darker neon color palette with bursts of light (magenta/green/cyan theme) per user request
 - Responsive layout for tablets and phones
 - PWA manifest + Service Worker for offline capability
 - SVG app icons

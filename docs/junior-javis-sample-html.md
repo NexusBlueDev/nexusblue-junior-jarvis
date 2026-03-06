@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Junior Jarvis - AI Future Guesser!</title>
     <style>
-        body { font-family: 'Arial', sans-serif; background: linear-gradient(to bottom, #001F3F, #007BFF); color: #fff; text-align: center; margin: 0; padding: 20px; }
+        body { font-family: 'Arial', sans-serif; background: linear-gradient(to bottom, #0a0a0a, #1a1a1a); color: #fff; text-align: center; margin: 0; padding: 20px; }
         #avatar { width: 200px; height: 200px; border-radius: 50%; margin: 20px auto; background: #007BFF; border: 5px solid #00FFFF; animation: glow 2s infinite; }
         @keyframes glow { 0%, 100% { box-shadow: 0 0 20px #00FFFF; } 50% { box-shadow: 0 0 40px #00FFFF; } }
         #question { font-size: 2em; margin: 20px; text-shadow: 2px 2px 4px #000; }
         .buttons { display: flex; justify-content: center; gap: 10px; flex-wrap: wrap; }
         button { padding: 15px 20px; font-size: 1.5em; border: none; border-radius: 50px; cursor: pointer; transition: transform 0.2s; background: #007BFF; color: white; }
-        #yes { background: #28A745; } #no { background: #DC3545; } #prob { background: #FFC107; }
+        #yes { background: #00FF88; } #no { background: #FF5252; } #prob { background: #FFCC00; }
         #probn { background: #FD7E14; } #dk { background: #6C757D; }
         button:active { transform: scale(0.95); }
         #guess-img { width: 300px; height: 300px; border-radius: 20px; margin: 20px; box-shadow: 0 0 20px #00FFFF; animation: fadeIn 1s; }
